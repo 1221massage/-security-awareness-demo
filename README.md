@@ -1,4 +1,4 @@
-🔐 Security Awareness Demo
+ 🔐 Security Awareness Demo
 
 An educational website designed to help people understand cybersecurity and stay safe online.
 
