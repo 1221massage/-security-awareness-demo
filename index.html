@@ -1,144 +1,231 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>CyberShield | Secure Access</title>
-<style>
-*{box-sizing:border-box}
-body{margin:0;font-family:Arial,sans-serif;background:#07111f;color:#f4f8ff;min-height:100vh}
-header{padding:20px 5%;border-bottom:1px solid #263b54;display:flex;justify-content:space-between;align-items:center}
-.logo{font-size:23px;font-weight:bold;color:#54d5ff}
-main{max-width:900px;margin:35px auto;padding:18px}
-.card{background:#101f33;border:1px solid #263b54;border-radius:18px;padding:25px;margin-bottom:18px}
-.auth{max-width:430px;margin:30px auto}
-h1{font-size:30px}
-p{color:#b8c8db;line-height:1.6}
-label{display:block;margin-top:14px}
-input{width:100%;padding:13px;margin-top:7px;background:#07111f;border:1px solid #354a65;border-radius:9px;color:white;font-size:16px}
-button{padding:12px 16px;border:0;border-radius:9px;background:#54d5ff;color:#061321;font-weight:bold;cursor:pointer;margin:8px 5px 5px 0}
-.secondary{background:#263b54;color:white}
-.hidden{display:none!important}
-.notice{padding:12px;background:#07111f;border-radius:9px;margin-top:12px;overflow-wrap:anywhere}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:15px}
-a{color:#54d5ff}
-.small{font-size:12px}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CyberShield | Login</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #071426, #102e4a);
+      color: #fff;
+      padding: 20px;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 420px;
+      padding: 30px;
+      background: #12243a;
+      border: 1px solid #284766;
+      border-radius: 16px;
+      box-shadow: 0 15px 40px #0005;
+    }
+
+    h1 {
+      text-align: center;
+      color: #4de1c1;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #b8c9dc;
+      margin-bottom: 25px;
+    }
+
+    label {
+      display: block;
+      margin: 14px 0 7px;
+      font-size: 14px;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #42617f;
+      border-radius: 8px;
+      background: #08182a;
+      color: white;
+      font-size: 16px;
+    }
+
+    button {
+      width: 100%;
+      padding: 13px;
+      margin-top: 18px;
+      border: none;
+      border-radius: 8px;
+      background: #4de1c1;
+      color: #062034;
+      font-weight: bold;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    button.secondary {
+      background: transparent;
+      color: #4de1c1;
+      border: 1px solid #4de1c1;
+      margin-top: 10px;
+    }
+
+    #message {
+      margin-top: 16px;
+      line-height: 1.5;
+      overflow-wrap: anywhere;
+      color: #ffd580;
+    }
+
+    #dashboard {
+      display: none;
+      text-align: center;
+    }
+
+    .small {
+      color: #b8c9dc;
+      font-size: 13px;
+      margin-top: 18px;
+    }
+  </style>
 </head>
+
 <body>
-<header>
-  <div class="logo">🛡️ CyberShield</div>
-  <button id="logout" class="secondary hidden">Logout</button>
-</header>
-<main>
-  <section id="authSection" class="card auth">
-    <h1 id="formTitle">Welcome Back 🔐</h1>
-    <p>Sign in or create an account to access the CyberShield Security Dashboard.</p>
-    <form id="authForm">
-      <label for="email">Email address</label>
-      <input id="email" type="email" autocomplete="email" required placeholder="you@example.com">
-      <label for="password">Password</label>
-      <input id="password" type="password" autocomplete="current-password" required minlength="8" placeholder="At least 8 characters">
-      <button id="submitButton" type="submit">Login</button>
-      <button id="switchButton" type="button" class="secondary">Create Account</button>
-    </form>
-    <div id="message" class="notice" role="status" aria-live="polite">
-      Your account is managed securely through Supabase Authentication.
-    </div>
-    <p class="small">Use a unique password. Never share your password with anyone.</p>
-  </section>
-  <section id="dashboard" class="hidden">
-    <div class="card">
-      <h1>Welcome to CyberShield 🛡️</h1>
-      <p id="welcome"></p>
-      <p>Your Security Awareness Dashboard is ready.</p>
-    </div>
-    <div class="grid">
-      <div class="card">
-        <h2>🔐 Password Safety</h2>
-        <p>Learn good password habits.</p>
-        <ul>
-          <li>Use long, unique passwords.</li>
-          <li>Consider a password manager.</li>
-          <li>Enable multi-factor authentication.</li>
-        </ul>
-      </div>
-      <div class="card">
-        <h2>🎣 Phishing Awareness</h2>
-        <p>Be careful with urgent messages, unexpected attachments and requests for passwords.</p>
-        <button id="phishingButton">Show Safety Tip</button>
-        <div id="phishingTip" class="notice hidden">
-          Never trust a link just because a message looks official. Visit the organisation's website independently.
-        </div>
-      </div>
-      <div class="card">
-        <h2>🧠 Security Quiz</h2>
-        <p>What should you do if an unexpected email asks for your password?</p>
-        <button id="wrongAnswer" class="secondary">Reply with my password</button>
-        <button id="rightAnswer">Verify through an official channel</button>
-        <div id="quizResult" class="notice" role="status">Choose an answer.</div>
-      </div>
-    </div>
-  </section>
-</main>
-<footer style="text-align:center;padding:20px;color:#9aacc2">
-  CyberShield Security Awareness Demo
-</footer>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>
-const SUPABASE_URL = "https://cpwjposjhgpnygiocjht.supabase.co";
-const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_Q7TrQWEMPrGRtsQqVm1Icw_e8Bapcql";
-const supabaseClient = window.supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_PUBLISHABLE_KEY
-);
-const authSection = document.getElementById("authSection");
-const dashboard = document.getElementById("dashboard");
-const logoutButton = document.getElementById("logout");
-const authForm = document.getElementById("authForm");
-const message = document.getElementById("message");
-const formTitle = document.getElementById("formTitle");
-const submitButton = document.getElementById("submitButton");
-const switchButton = document.getElementById("switchButton");
-const passwordInput = document.getElementById("password");
-let isRegistering = false;
-let busy = false;
-function showMessage(text) {
-  message.textContent = text;
-}
-function showDashboard(session) {
-  const loggedIn = Boolean(session);
-  authSection.classList.toggle("hidden", loggedIn);
-  dashboard.classList.toggle("hidden", !loggedIn);
-  logoutButton.classList.toggle("hidden", !loggedIn);
-  if (loggedIn) {
-    document.getElementById("welcome").textContent =
-      "Signed in as " + (session.user.email || "registered user") + ".";
-  }
-}
-switchButton.addEventListener("click", () => {
-  isRegistering = !isRegistering;
-  formTitle.textContent = isRegistering ? "Create Account 👤" : "Welcome Back 🔐";
-  submitButton.textContent = isRegistering ? "Register" : "Login";
-  switchButton.textContent = isRegistering ? "Back to Login" : "Create Account";
-  passwordInput.autocomplete = isRegistering ? "new-password" : "current-password";
-  showMessage(
-    isRegistering
-      ? "Enter your email and create a strong, unique password."
-      : "Enter your account details to sign in."
-  );
-});
-authForm.addEventListener("submit", async (event) => {
-  event.preventDefault();
-  if (busy) return;
-  busy = true;
-  submitButton.disabled = true;
-  switchButton.disabled = true;
-  showMessage("Please wait...");
-  const email = document.getElementById("email").value.trim();
-  const password = passwordInput.value;
-  try {
-    if (isRegistering) {
+  <main class="card">
+    <section id="authSection">
+      <h1>🛡️ CyberShield</h1>
+      <p class="subtitle">Cybersecurity Awareness Portal</p>
+
+      <form id="authForm">
+        <label for="email">Email address</label>
+        <input
+          id="email"
+          type="email"
+          autocomplete="email"
+          placeholder="you@example.com"
+          required
+        >
+
+        <label for="password">Password</label>
+        <input
+          id="password"
+          type="password"
+          autocomplete="current-password"
+          placeholder="Enter password (at least 6 characters)"
+          minlength="6"
+          required
+        >
+
+        <button type="submit" id="loginButton">Login</button>
+        <button type="button" class="secondary" id="registerButton">
+          Create Account
+        </button>
+      </form>
+
+      <div id="message" role="status"></div>
+
+      <p class="small">
+        Use your own email address. Registration may require email confirmation.
+      </p>
+    </section>
+
+    <section id="dashboard">
+      <h1>Welcome to CyberShield</h1>
+      <p>You are successfully logged in.</p>
+      <p id="userEmail"></p>
+
+      <button id="logoutButton">Logout</button>
+    </section>
+  </main>
+
+  <script>
+    // Supabase project settings
+    const SUPABASE_URL = "https://cpwjposjhgpnygiocjht.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_Q7TrQWEMPrGRtsQqVm1Icw_e8Bapcql";
+
+    const supabaseClient = window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
+    );
+
+    const authSection = document.getElementById("authSection");
+    const dashboard = document.getElementById("dashboard");
+    const message = document.getElementById("message");
+    const emailInput = document.getElementById("email");
+    const passwordInput = document.getElementById("password");
+
+    function showMessage(text) {
+      message.textContent = text;
+    }
+
+    function showDashboard(user) {
+      authSection.style.display = "none";
+      dashboard.style.display = "block";
+      document.getElementById("userEmail").textContent =
+        user.email || "Logged-in user";
+    }
+
+    function showLogin() {
+      dashboard.style.display = "none";
+      authSection.style.display = "block";
+    }
+
+    // Login
+    document.getElementById("loginButton").addEventListener("click", async (event) => {
+      event.preventDefault();
+
+      const email = emailInput.value.trim();
+      const password = passwordInput.value;
+
+      if (!email || !password) {
+        showMessage("Please enter your email and password.");
+        return;
+      }
+
+      showMessage("Logging in...");
+
+      const { data, error } = await supabaseClient.auth.signInWithPassword({
+        email,
+        password
+      });
+
+      if (error) {
+        showMessage(error.message);
+        return;
+      }
+
+      showDashboard(data.user);
+    });
+
+    // Registration
+    document.getElementById("registerButton").addEventListener("click", async () => {
+      const email = emailInput.value.trim();
+      const password = passwordInput.value;
+
+      if (!email || !password) {
+        showMessage("Enter your email and password first.");
+        return;
+      }
+
+      if (password.length < 6) {
+        showMessage("Password must be at least 6 characters.");
+        return;
+      }
+
+      showMessage("Creating your account...");
+
       const { data, error } = await supabaseClient.auth.signUp({
         email,
         password,
@@ -146,62 +233,54 @@ authForm.addEventListener("submit", async (event) => {
           emailRedirectTo: window.location.origin + window.location.pathname
         }
       });
-      if (error) throw error;
-      if (data.session) {
-        showMessage("Account created successfully.");
-      } else {
-        showMessage("Registration received! Check your email for a confirmation link, then return here to log in.");
+
+      if (error) {
+        showMessage(error.message);
+        return;
       }
-    } else {
-      const { error } = await supabaseClient.auth.signInWithPassword({
-        email,
-        password
-      });
-      if (error) throw error;
-      showMessage("Login successful.");
-    }
-  } catch (error) {
-    showMessage(error.message || "Something went wrong. Please try again.");
-  } finally {
-    busy = false;
-    submitButton.disabled = false;
-    switchButton.disabled = false;
-  }
-});
-logoutButton.addEventListener("click", async () => {
-  logoutButton.disabled = true;
-  const { error } = await supabaseClient.auth.signOut();
-  logoutButton.disabled = false;
-  if (error) {
-    alert("Logout failed. Please try again.");
-  } else {
-    passwordInput.value = "";
-    showDashboard(null);
-    showMessage("You have logged out.");
-  }
-});
-document.getElementById("phishingButton").addEventListener("click", () => {
-  document.getElementById("phishingTip").classList.toggle("hidden");
-});
-document.getElementById("rightAnswer").addEventListener("click", () => {
-  document.getElementById("quizResult").textContent =
-    "Correct! Verify unexpected requests through a trusted, official channel.";
-});
-document.getElementById("wrongAnswer").addEventListener("click", () => {
-  document.getElementById("quizResult").textContent =
-    "Incorrect. Never share your password. Verify the request independently.";
-});
-supabaseClient.auth.onAuthStateChange((_event, session) => {
-  showDashboard(session);
-});
-(async () => {
-  const { data, error } = await supabaseClient.auth.getSession();
-  if (error) {
-    showMessage("Unable to check your session. Please refresh the page.");
-    return;
-  }
-  showDashboard(data.session);
-})();
-</script>
+
+      if (data.session && data.user) {
+        showDashboard(data.user);
+      } else {
+        showMessage(
+          "Registration successful. Check your email to confirm your account, then log in."
+        );
+      }
+    });
+
+    // Logout
+    document.getElementById("logoutButton").addEventListener("click", async () => {
+      const { error } = await supabaseClient.auth.signOut();
+
+      if (error) {
+        document.getElementById("userEmail").textContent = error.message;
+        return;
+      }
+
+      showLogin();
+      showMessage("You have logged out.");
+    });
+
+    // Restore login session when the page is reopened
+    supabaseClient.auth.getSession().then(({ data, error }) => {
+      if (error) {
+        showMessage(error.message);
+        return;
+      }
+
+      if (data.session) {
+        showDashboard(data.session.user);
+      }
+    });
+
+    // Respond to login/logout state changes
+    supabaseClient.auth.onAuthStateChange((_event, session) => {
+      if (session) {
+        showDashboard(session.user);
+      } else {
+        showLogin();
+      }
+    });
+  </script>
 </body>
 </html>
