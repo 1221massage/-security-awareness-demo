@@ -1,0 +1,43 @@
+🔐 Security Awareness Demo
+
+An educational website designed to help people understand cybersecurity and stay safe online.
+
+🎯 Project Overview
+
+The Security Awareness Demo provides simple, interactive learning materials to help users recognize common online threats and develop safer digital habits.
+
+✨ Features
+
+* 🎣 Phishing Awareness: Learn how to identify suspicious messages and links.
+* 🔑 Password Security: Understand the importance of strong, unique passwords.
+* 🌐 Safe Browsing: Learn how to browse the internet more safely.
+* 🧠 Cybersecurity Quiz: Test your knowledge with interactive questions.
+* 📱 Mobile-Friendly Design: Access the website from your phone or computer.
+
+🛡️ Purpose
+
+This project is intended for cybersecurity awareness and educational purposes only. It helps users understand common online risks and learn practical ways to protect themselves.
+
+🔒 Privacy
+
+Never enter real passwords or sensitive personal information into an unverified website. Educational demonstrations should not collect or transmit users’ passwords.
+
+🚀 Live Website
+
+Visit the Security Awareness Demo:
+
+https://1221massage.github.io/security-awareness-demo/
+
+🛠️ Technologies
+
+* HTML
+* CSS
+* JavaScript
+
+📚 Disclaimer
+
+This is an educational project. It is not a substitute for professional cybersecurity services.
+
+⸻
+
+Stay alert. Stay secure. Think before you click! 🔐
