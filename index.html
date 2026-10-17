@@ -2,152 +2,213 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Password Security Checker</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CyberShield | Security Awareness</title>
 <style>
+:root{--bg:#07111f;--card:#101f33;--line:#263b54;--text:#f4f8ff;--muted:#a8b9ce;--blue:#54d5ff;--green:#55e6a5}
 *{box-sizing:border-box}
-body{
-  margin:0;
-  font-family:Arial,sans-serif;
-  background:linear-gradient(135deg,#07111f,#142b4a);
-  color:#fff;
-  min-height:100vh;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  padding:20px;
-}
-.card{
-  width:100%;
-  max-width:500px;
-  background:#ffffff0d;
-  border:1px solid #ffffff24;
-  border-radius:22px;
-  padding:28px;
-  box-shadow:0 20px 60px #0005;
-}
-.badge{
-  display:inline-block;
-  color:#73e5ff;
-  border:1px solid #73e5ff66;
-  border-radius:20px;
-  padding:7px 12px;
-  font-size:12px;
-  letter-spacing:1px;
-}
-h1{font-size:29px;margin-bottom:8px}
-p{color:#c3d0e0;line-height:1.6}
-label{display:block;margin:20px 0 8px}
-.inputbox{display:flex;gap:8px}
-input{
-  flex:1;min-width:0;padding:14px;
-  border-radius:10px;border:1px solid #42546d;
-  background:#091626;color:#fff;font-size:16px;
-}
-button{
-  cursor:pointer;border:0;border-radius:10px;
-  padding:12px 15px;font-weight:bold;
-}
-.toggle{background:#263b56;color:#fff}
-.meter{height:9px;background:#34445a;border-radius:10px;margin-top:16px;overflow:hidden}
-#bar{height:100%;width:0;background:#f87171;transition:.25s}
-#strength{font-weight:bold;margin-top:12px}
-.panel{background:#091626;border-radius:12px;padding:15px;margin-top:18px}
-.panel h3{margin-top:0}
-li{margin:9px 0;color:#d2deed}
-.tip{font-size:13px;color:#9eb1c9;margin-top:18px}
-footer{text-align:center;font-size:12px;color:#91a3b9;margin-top:20px}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,sans-serif;line-height:1.6}
+header{padding:22px 5%;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.logo{font-weight:800;font-size:22px;color:var(--blue)}
+nav{display:flex;gap:14px;flex-wrap:wrap}
+nav a{color:var(--muted);text-decoration:none;font-size:14px}
+main{max-width:1050px;margin:auto;padding:28px 18px}
+.hero{padding:30px 0 22px}
+.tag{color:var(--green);font-size:12px;letter-spacing:2px;font-weight:bold}
+h1{font-size:clamp(32px,6vw,52px);line-height:1.12;margin:12px 0}
+h2{margin-top:0}
+p{color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:18px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px;margin-bottom:18px}
+input,button{font:inherit}
+input{width:100%;padding:13px;border-radius:9px;background:#07111f;border:1px solid var(--line);color:white;margin:8px 0}
+button{border:0;border-radius:9px;padding:11px 15px;background:var(--blue);color:#061321;font-weight:bold;cursor:pointer;margin:5px 4px 5px 0}
+.secondary{background:#263b54;color:white}
+.result{padding:12px;background:#07111f;border-radius:9px;margin-top:12px;overflow-wrap:anywhere}
+.meter{height:8px;background:#263b54;border-radius:8px;overflow:hidden;margin:10px 0}
+#bar{height:100%;width:0;background:var(--green);transition:.2s}
+.option{display:block;text-align:left;width:100%;background:#192c43;color:white;border:1px solid var(--line);margin:9px 0}
+.option:hover{border-color:var(--blue)}
+footer{text-align:center;padding:25px;color:var(--muted);border-top:1px solid var(--line);font-size:13px}
+.small{font-size:12px}
 </style>
 </head>
 <body>
-<main class="card">
-  <span class="badge">CYBER SECURITY AWARENESS</span>
-  <h1>🔐 Password Security Checker</h1>
-  <p>Learn how to create a stronger password. Test only a fictional or example password.</p>
-  <label for="password">Enter an example password</label>
-  <div class="inputbox">
-    <input id="password" type="password" placeholder="Try an example password" autocomplete="off" spellcheck="false">
-    <button class="toggle" id="toggle" type="button">Show</button>
+<header>
+  <div class="logo">🛡️ CyberShield</div>
+  <nav>
+    <a href="#dashboard">Dashboard</a>
+    <a href="#password">Password</a>
+    <a href="#phishing">Phishing</a>
+    <a href="#quiz">Quiz</a>
+  </nav>
+</header>
+<main>
+<section class="hero" id="dashboard">
+  <div class="tag">CYBER SECURITY AWARENESS</div>
+  <h1>Stay Smart.<br>Stay Secure.</h1>
+  <p>Learn practical ways to protect your digital life through interactive security exercises.</p>
+  <div class="grid">
+    <div class="card"><h3>🔐 Password Safety</h3><p>Explore password length, uniqueness and safer habits.</p><a href="#password"><button>Check Password</button></a></div>
+    <div class="card"><h3>🎣 Phishing Awareness</h3><p>Practise spotting common warning signs in suspicious messages.</p><a href="#phishing"><button>Start Practice</button></a></div>
+    <div class="card"><h3>🧠 Security Quiz</h3><p>Test your knowledge and see your score.</p><a href="#quiz"><button>Take Quiz</button></a></div>
   </div>
-  <div class="meter"><div id="bar"></div></div>
-  <div id="strength" aria-live="polite">Strength: Not checked</div>
-  <section class="panel">
-    <h3>⏱️ Estimated Crack Time</h3>
-    <p id="crack">Enter an example password to see an illustrative estimate.</p>
-    <p class="tip">This is a rough educational estimate, not a prediction. Real attack times depend on many factors.</p>
-  </section>
-  <section class="panel">
-    <h3>🛡️ Password Safety Tips</h3>
-    <ul id="tips">
-      <li>Use at least  long characters.</li>
-      <li>Prefer a unique passphrase with several unrelated words.</li>
-      <li>Never reuse passwords across accounts.</li>
-      <li>Use a password manager and enable two-factor authentication.</li>
-    </ul>
-  </section>
-  <p class="tip">Privacy: this demo checks the text in your browser. It does not send the password to a server. Do not enter a real password.</p>
-  <footer>Security Awareness Demo • Educational use only</footer>
+</section>
+<section class="card" id="password">
+<h2>🔐 Password Security Checker</h2>
+<p>Use only an example password—not a real password from any account. Text is checked locally in this browser.</p>
+<label for="pw">Example password</label>
+<div style="display:flex;gap:8px;align-items:center">
+<input id="pw" type="password" placeholder="Enter a fictional password" autocomplete="off">
+<button id="show" class="secondary" type="button">Show</button>
+</div>
+<div class="meter"><div id="bar"></div></div>
+<div id="pwResult" class="result" aria-live="polite">Strength: Not checked</div>
+<div id="pwTips" class="result">Tip: use a long, unique passphrase and never reuse passwords.</div>
+</section>
+<section class="card" id="phishing">
+<h2>🎣 Phishing Awareness Practice</h2>
+<p>Read the fictional message below. Do not open links in suspicious messages.</p>
+<div class="result">
+<strong>Example message</strong>
+<p style="color:white">“URGENT! Your account will be closed in 10 minutes. Confirm your password immediately using the link below!”</p>
+<p>Warning signs: urgency, threats, and a request for a password.</p>
+</div>
+<p><strong>What should you do?</strong></p>
+<button onclick="phishAnswer(true)">Report or verify through the official website</button>
+<button class="secondary" onclick="phishAnswer(false)">Click the link and enter your password</button>
+<div id="phishResult" class="result" aria-live="polite">Choose an answer to see feedback.</div>
+<hr style="border-color:var(--line);margin:22px 0">
+<h3>Optional: Examine a URL</h3>
+<p>Enter a URL to display basic warning signs. This is not a definitive malware or phishing detector. Do not enter private links.</p>
+<input id="urlInput" type="text" placeholder="example.com or https://example.com">
+<button onclick="checkUrl()">Review URL</button>
+<div id="urlResult" class="result" aria-live="polite">URL review will appear here.</div>
+</section>
+<section class="card" id="quiz">
+<h2>🧠 Cyber Security Quiz</h2>
+<div id="question"></div>
+<div id="answers"></div>
+<div id="quizResult" class="result" aria-live="polite">Your score will appear here.</div>
+<button id="next" type="button">Start Quiz</button>
+</section>
+<section class="card">
+<h2>✅ Everyday Security Checklist</h2>
+<ul>
+<li>Use a unique password for every account.</li>
+<li>Turn on multi-factor authentication.</li>
+<li>Install software and security updates.</li>
+<li>Verify unexpected requests through a trusted channel.</li>
+<li>Back up important files regularly.</li>
+<li>Avoid sensitive activity on untrusted public Wi-Fi.</li>
+</ul>
+</section>
 </main>
+<footer>CyberShield Security Awareness Demo · Educational use only</footer>
 <script>
-const input = document.getElementById("password");
-const bar = document.getElementById("bar");
-const strength = document.getElementById("strength");
-const crack = document.getElementById("crack");
-const tips = document.getElementById("tips");
-const toggle = document.getElementById("toggle");
-toggle.addEventListener("click", () => {
-  const showing = input.type === "text";
-  input.type = showing ? "password" : "text";
-  toggle.textContent = showing ? "Show" : "Hide";
+const pw=document.getElementById('pw');
+const bar=document.getElementById('bar');
+const pwResult=document.getElementById('pwResult');
+const pwTips=document.getElementById('pwTips');
+document.getElementById('show').addEventListener('click',function(){
+  const visible=pw.type==='text';
+  pw.type=visible?'password':'text';
+  this.textContent=visible?'Show':'Hide';
 });
-function estimateTime(score, length) {
-  if (length === 0) return "Enter an example password first.";
-  if (score <= 1) return "Potentially very quick to guess.";
-  if (score === 2) return "Could be guessed relatively quickly.";
-  if (score === 3) return "May resist simple guesses, but could still be vulnerable.";
-  return "Potentially much harder to guess, depending on how it was created.";
-}
-function checkPassword() {
-  const value = input.value;
-  const length = value.length;
-  let score = 0;
-  if (length >= 12) score++;
-  if (length >= 16) score++;
-  if (/[a-z]/.test(value) && /[A-Z]/.test(value)) score++;
-  if (/[0-9]/.test(value)) score++;
-  if (/[^A-Za-z0-9]/.test(value)) score++;
-  if (!length) {
-    bar.style.width = "0";
-    strength.textContent = "Strength: Not checked";
-    crack.textContent = "Enter an example password to see guidance.";
-    tips.innerHTML = "<li>Use a long, unique passphrase.</li><li>Never reuse passwords.</li><li>Use a password manager and enable two-factor authentication.</li>";
+pw.addEventListener('input',function(){
+  const s=pw.value;
+  if(!s){
+    bar.style.width='0';
+    pwResult.textContent='Strength: Not checked';
+    pwTips.textContent='Tip: use a long, unique passphrase and never reuse passwords.';
     return;
   }
-  let label, color, width;
-  if (length < 8 || score <= 1) {
-    label = "Weak"; color = "#f87171"; width = "25%";
-  } else if (score <= 2) {
-    label = "Fair"; color = "#fb923c"; width = "45%";
-  } else if (score <= 3) {
-    label = "Good"; color = "#facc15"; width = "70%";
-  } else {
-    label = "Strong pattern"; color = "#4ade80"; width = "100%";
-  }
-  bar.style.width = width;
-  bar.style.background = color;
-  strength.textContent = "Strength: " + label;
-  crack.textContent = estimateTime(score, length);
-  const advice = [];
-  if (length < 16) advice.push("Consider a longer password or passphrase (16+ characters is a useful goal).");
-  if (!/[a-z]/.test(value) || !/[A-Z]/.test(value)) advice.push("Mixing character types may help, but length and unpredictability matter more.");
-  if (!/[0-9]/.test(value)) advice.push("You may include numbers if they are not predictable.");
-  if (!/[^A-Za-z0-9]/.test(value)) advice.push("A symbol can help when used unpredictably.");
-  advice.push("Avoid names, birthdays, common phrases, and predictable substitutions.");
-  advice.push("Use a unique password for every account and consider a password manager.");
-  advice.push("Enable two-factor authentication where available.");
-  tips.innerHTML = advice.map(item => "<li>" + item + "</li>").join("");
+  let points=0;
+  if(s.length>=14)points++;
+  if(s.length>=20)points++;
+  if(/[a-z]/.test(s)&&/[A-Z]/.test(s))points++;
+  if(/[0-9]/.test(s))points++;
+  if(/[^A-Za-z0-9]/.test(s))points++;
+  const level=s.length<8||points<=1?'Weak':points<=2?'Fair':points<=3?'Good':'Strong pattern';
+  const width=level==='Weak'?'25%':level==='Fair'?'45%':level==='Good'?'70%':'100%';
+  bar.style.width=width;
+  pwResult.textContent='Strength indicator: '+level;
+  let tips=[];
+  if(s.length<16)tips.push('Try a longer passphrase; 16 or more characters is a useful goal.');
+  tips.push('Avoid personal details and common or predictable phrases.');
+  tips.push('Use a different password for every account.');
+  tips.push('Consider a reputable password manager and multi-factor authentication.');
+  pwTips.textContent=tips.join(' ');
+});
+function phishAnswer(safe){
+  const r=document.getElementById('phishResult');
+  r.textContent=safe
+  ?'Correct! Do not use the message link. Visit the official site independently or contact the organisation through a trusted channel.'
+  :'Not safe. Urgency and requests for passwords are warning signs. Never enter credentials through a suspicious message link.';
 }
-input.addEventListener("input", checkPassword);
+function checkUrl(){
+  const field=document.getElementById('urlInput');
+  const out=document.getElementById('urlResult');
+  const raw=field.value.trim();
+  if(!raw){out.textContent='Enter an example URL to review.';return;}
+  let candidate=raw;
+  if(!/^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(candidate))candidate='https://'+candidate;
+  let u;
+  try{u=new URL(candidate);}catch(e){out.textContent='This does not look like a valid URL. Check the spelling and format.';return;}
+  const warnings=[];
+  if(u.protocol!=='https:')warnings.push('It does not use HTTPS.');
+  if(u.username||u.password)warnings.push('It contains text before the host that may be used to mislead.');
+  if(u.hostname.startsWith('xn--')||u.hostname.includes('.xn--'))warnings.push('It contains an internationalised domain label; check for look-alike characters.');
+  if(/^\d{1,3}(\.\d{1,3}){3}$/.test(u.hostname))warnings.push('It uses an IP address instead of a familiar domain name.');
+  if(u.hostname.includes('--'))warnings.push('The domain contains repeated hyphens; inspect it carefully.');
+  out.textContent=(warnings.length?'Potential warning signs: '+warnings.join(' '):'No basic warning signs were detected by these simple checks.')+' This cannot determine whether a site is safe. Verify the domain independently and never enter sensitive information if unsure.';
+}
+const questions=[
+ {q:'What is the safest response to an unexpected message asking for your password?',a:['Reply with your password','Use the link immediately','Verify independently through an official channel'],c:2},
+ {q:'Which password habit is best?',a:['Reuse one password everywhere','Use unique passwords and a password manager','Use your birthday'],c:1},
+ {q:'What does multi-factor authentication do?',a:['Adds another verification step','Makes every message trustworthy','Removes the need for updates'],c:0},
+ {q:'What should you do with unexpected attachments?',a:['Open them immediately','Check the sender and verify before opening','Forward them to everyone'],c:1},
+ {q:'What is HTTPS by itself proof of?',a:['The site is definitely legitimate','The site has no malware','It does not guarantee the site is trustworthy'],c:2}
+];
+let qi=0,score=0,answered=false;
+const qEl=document.getElementById('question');
+const aEl=document.getElementById('answers');
+const qr=document.getElementById('quizResult');
+const next=document.getElementById('next');
+function renderQuestion(){
+  answered=false;
+  const q=questions[qi];
+  qEl.textContent='Question '+(qi+1)+' of '+questions.length+': '+q.q;
+  aEl.innerHTML='';
+  q.a.forEach((answer,i)=>{
+    const b=document.createElement('button');
+    b.className='option';
+    b.textContent=answer;
+    b.addEventListener('click',()=>chooseAnswer(i));
+    aEl.appendChild(b);
+  });
+  qr.textContent='Score: '+score;
+  next.textContent='Next Question';
+}
+function chooseAnswer(i){
+  if(answered)return;
+  answered=true;
+  const correct=questions[qi].c===i;
+  if(correct)score++;
+  qr.textContent=(correct?'Correct!':'Not quite.')+' '+questions[qi].a[questions[qi].c]+'  |  Score: '+score;
+  Array.from(aEl.children).forEach((b,index)=>{b.disabled=true;b.style.opacity=index===questions[qi].c?'1':'.65';});
+}
+next.addEventListener('click',()=>{
+  if(qEl.textContent===''||next.textContent==='Play Again'){qi=0;score=0;renderQuestion();return;}
+  if(!answered){if(next.textContent==='Start Quiz'){renderQuestion();}else{qr.textContent='Choose an answer first.';}return;}
+  qi++;
+  if(qi>=questions.length){
+    qEl.textContent='Quiz complete!';
+    aEl.innerHTML='';
+    qr.textContent='Final score: '+score+' / '+questions.length+'. '+(score===questions.length?'Excellent work!':'Review the checklist and try again.');
+    next.textContent='Play Again';
+  }else renderQuestion();
+});
 </script>
 </body>
 </html>
