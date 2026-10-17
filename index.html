@@ -3,399 +3,151 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Security Awareness Demo</title>
-
+<title>Password Security Checker</title>
 <style>
-* {
-    box-sizing: border-box;
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:linear-gradient(135deg,#07111f,#142b4a);
+  color:#fff;
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  padding:20px;
 }
-
-body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: #0b1120;
-    color: #f1f5f9;
-    line-height: 1.6;
+.card{
+  width:100%;
+  max-width:500px;
+  background:#ffffff0d;
+  border:1px solid #ffffff24;
+  border-radius:22px;
+  padding:28px;
+  box-shadow:0 20px 60px #0005;
 }
-
-header {
-    text-align: center;
-    padding: 40px 20px;
-    background: linear-gradient(135deg, #111827, #164e63);
+.badge{
+  display:inline-block;
+  color:#73e5ff;
+  border:1px solid #73e5ff66;
+  border-radius:20px;
+  padding:7px 12px;
+  font-size:12px;
+  letter-spacing:1px;
 }
-
-header h1 {
-    color: #38bdf8;
-    font-size: 30px;
+h1{font-size:29px;margin-bottom:8px}
+p{color:#c3d0e0;line-height:1.6}
+label{display:block;margin:20px 0 8px}
+.inputbox{display:flex;gap:8px}
+input{
+  flex:1;min-width:0;padding:14px;
+  border-radius:10px;border:1px solid #42546d;
+  background:#091626;color:#fff;font-size:16px;
 }
-
-header p {
-    color: #cbd5e1;
+button{
+  cursor:pointer;border:0;border-radius:10px;
+  padding:12px 15px;font-weight:bold;
 }
-
-nav {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 10px;
-    padding: 15px;
-    background: #111827;
-}
-
-nav a {
-    color: #7dd3fc;
-    text-decoration: none;
-    padding: 8px;
-}
-
-.container {
-    max-width: 900px;
-    margin: auto;
-    padding: 20px;
-}
-
-.card {
-    background: #172033;
-    padding: 22px;
-    margin: 20px 0;
-    border-radius: 14px;
-    border: 1px solid #334155;
-}
-
-h2 {
-    color: #38bdf8;
-}
-
-input, button {
-    width: 100%;
-    padding: 13px;
-    margin-top: 10px;
-    border-radius: 8px;
-    font-size: 16px;
-}
-
-input {
-    background: #0b1120;
-    color: white;
-    border: 1px solid #475569;
-}
-
-button {
-    background: #0284c7;
-    color: white;
-    border: none;
-    cursor: pointer;
-    font-weight: bold;
-}
-
-button:hover {
-    background: #0369a1;
-}
-
-.result {
-    margin-top: 15px;
-    font-weight: bold;
-}
-
-.tip {
-    background: #0f2b36;
-    padding: 12px;
-    border-radius: 8px;
-    margin: 10px 0;
-}
-
-footer {
-    text-align: center;
-    padding: 25px;
-    background: #111827;
-    color: #94a3b8;
-}
-
-.small {
-    color: #cbd5e1;
-    font-size: 14px;
-}
+.toggle{background:#263b56;color:#fff}
+.meter{height:9px;background:#34445a;border-radius:10px;margin-top:16px;overflow:hidden}
+#bar{height:100%;width:0;background:#f87171;transition:.25s}
+#strength{font-weight:bold;margin-top:12px}
+.panel{background:#091626;border-radius:12px;padding:15px;margin-top:18px}
+.panel h3{margin-top:0}
+li{margin:9px 0;color:#d2deed}
+.tip{font-size:13px;color:#9eb1c9;margin-top:18px}
+footer{text-align:center;font-size:12px;color:#91a3b9;margin-top:20px}
 </style>
 </head>
-
 <body>
-
-<header>
-    <h1>🔐 Security Awareness Demo</h1>
-    <p>Learn to recognize online threats and protect yourself.</p>
-    <p>Think Before You Click!</p>
-</header>
-
-<nav>
-    <a href="#password">Password Safety</a>
-    <a href="#phishing">Phishing Test</a>
-    <a href="#quiz">Cyber Quiz</a>
-    <a href="#tips">Safety Tips</a>
-</nav>
-
-<main class="container">
-
-<section class="card" id="password">
-    <h2>🔑 Password Security Checker</h2>
-
-    <p>
-        Learn what makes a password stronger.
-        This demo checks the password locally in your browser.
-    </p>
-
-    <p class="small">
-        For safety, use a made-up example password here,
-        not your real password.
-    </p>
-
-    <label for="passwordInput">Example password:</label>
-
-    <input
-        type="password"
-        id="passwordInput"
-        placeholder="Enter a sample password"
-        autocomplete="off"
-    >
-
-    <button type="button" id="checkPassword">
-        Check Strength
-    </button>
-
-    <div class="result" id="passwordResult" aria-live="polite"></div>
-
-    <p class="small">
-        Your input is not sent to a server or saved by this page.
-    </p>
-</section>
-
-<section class="card" id="phishing">
-    <h2>🎣 Phishing Awareness Test</h2>
-
-    <p>
-        You receive a message:
-        "URGENT! Your account will be blocked.
-        Click this unfamiliar link immediately to verify your account."
-    </p>
-
-    <p>What should you do?</p>
-
-    <button type="button" data-phishing="wrong">
-        A. Click the link immediately
-    </button>
-
-    <button type="button" data-phishing="correct">
-        B. Avoid the link and verify through the official website
-    </button>
-
-    <button type="button" data-phishing="wrong">
-        C. Reply with my password
-    </button>
-
-    <div class="result" id="phishingResult" aria-live="polite"></div>
-</section>
-
-<section class="card" id="quiz">
-    <h2>🧠 Cybersecurity Quiz</h2>
-
-    <div id="quizArea">
-        <p id="question"></p>
-        <div id="answers"></div>
-        <p id="quizFeedback" class="result" aria-live="polite"></p>
-        <button type="button" id="nextQuestion">Next Question</button>
-    </div>
-
-    <p id="quizScore" class="result" aria-live="polite"></p>
-</section>
-
-<section class="card" id="tips">
-    <h2>🛡️ Safe Browsing Tips</h2>
-
-    <div class="tip">
-        <strong>1. Use strong passwords</strong><br>
-        Create long, unique passwords for different accounts.
-    </div>
-
-    <div class="tip">
-        <strong>2. Enable two-factor authentication</strong><br>
-        Add another layer of protection to important accounts.
-    </div>
-
-    <div class="tip">
-        <strong>3. Watch out for suspicious links</strong><br>
-        Check unexpected messages before opening links or attachments.
-    </div>
-
-    <div class="tip">
-        <strong>4. Keep your devices updated</strong><br>
-        Install security updates for your phone, computer and apps.
-    </div>
-
-    <div class="tip">
-        <strong>5. Never share verification codes</strong><br>
-        Do not share one-time passwords or account recovery codes with others.
-    </div>
-</section>
-
+<main class="card">
+  <span class="badge">CYBER SECURITY AWARENESS</span>
+  <h1>🔐 Password Security Checker</h1>
+  <p>Learn how to create a stronger password. Test only a fictional or example password.</p>
+  <label for="password">Enter an example password</label>
+  <div class="inputbox">
+    <input id="password" type="password" placeholder="Try an example password" autocomplete="off" spellcheck="false">
+    <button class="toggle" id="toggle" type="button">Show</button>
+  </div>
+  <div class="meter"><div id="bar"></div></div>
+  <div id="strength" aria-live="polite">Strength: Not checked</div>
+  <section class="panel">
+    <h3>⏱️ Estimated Crack Time</h3>
+    <p id="crack">Enter an example password to see an illustrative estimate.</p>
+    <p class="tip">This is a rough educational estimate, not a prediction. Real attack times depend on many factors.</p>
+  </section>
+  <section class="panel">
+    <h3>🛡️ Password Safety Tips</h3>
+    <ul id="tips">
+      <li>Use at least  long characters.</li>
+      <li>Prefer a unique passphrase with several unrelated words.</li>
+      <li>Never reuse passwords across accounts.</li>
+      <li>Use a password manager and enable two-factor authentication.</li>
+    </ul>
+  </section>
+  <p class="tip">Privacy: this demo checks the text in your browser. It does not send the password to a server. Do not enter a real password.</p>
+  <footer>Security Awareness Demo • Educational use only</footer>
 </main>
-
-<footer>
-    <p>🔐 Security Awareness Demo</p>
-    <p>Educational purposes only.</p>
-    <p>Stay alert. Stay secure. Think before you click!</p>
-</footer>
-
 <script>
-const passwordInput = document.getElementById("passwordInput");
-const passwordResult = document.getElementById("passwordResult");
-
-document.getElementById("checkPassword").addEventListener("click", function () {
-    const password = passwordInput.value;
-
-    if (!password) {
-        passwordResult.textContent = "Enter a sample password first.";
-        return;
-    }
-
-    let score = 0;
-
-    if (password.length >= 12) score++;
-    if (password.length >= 16) score++;
-    if (/[a-z]/.test(password) && /[A-Z]/.test(password)) score++;
-    if (/[0-9]/.test(password)) score++;
-    if (/[^A-Za-z0-9]/.test(password)) score++;
-
-    let message;
-
-    if (password.length < 8) {
-        message = "Weak example — use a much longer password.";
-    } else if (score <= 2) {
-        message = "Needs improvement — make it longer and less predictable.";
-    } else if (score <= 3) {
-        message = "Fair example — consider using a longer passphrase.";
-    } else {
-        message = "Good example! Length and uniqueness are important.";
-    }
-
-    passwordResult.textContent = message;
+const input = document.getElementById("password");
+const bar = document.getElementById("bar");
+const strength = document.getElementById("strength");
+const crack = document.getElementById("crack");
+const tips = document.getElementById("tips");
+const toggle = document.getElementById("toggle");
+toggle.addEventListener("click", () => {
+  const showing = input.type === "text";
+  input.type = showing ? "password" : "text";
+  toggle.textContent = showing ? "Show" : "Hide";
 });
-
-document.querySelectorAll("[data-phishing]").forEach(function (button) {
-    button.addEventListener("click", function () {
-        const result = document.getElementById("phishingResult");
-
-        if (button.dataset.phishing === "correct") {
-            result.textContent =
-                "Correct! Avoid suspicious links and verify through an official channel.";
-        } else {
-            result.textContent =
-                "Not safe. Urgent messages asking you to click or share secrets can be scams.";
-        }
-    });
-});
-
-const questions = [
-    {
-        question: "1. Should you reuse the same password everywhere?",
-        answers: [
-            "Yes, it is easier",
-            "No, use unique passwords"
-        ],
-        correct: 1
-    },
-    {
-        question: "2. What should you do with an unexpected login code?",
-        answers: [
-            "Share it with the caller",
-            "Keep it private and investigate unexpected requests"
-        ],
-        correct: 1
-    },
-    {
-        question: "3. How should you handle a suspicious link?",
-        answers: [
-            "Open it immediately",
-            "Avoid it and check the source independently"
-        ],
-        correct: 1
-    }
-];
-
-let currentQuestion = 0;
-let score = 0;
-let answered = false;
-
-function showQuestion() {
-    const question = questions[currentQuestion];
-
-    document.getElementById("question").textContent = question.question;
-
-    const answers = document.getElementById("answers");
-    answers.innerHTML = "";
-    document.getElementById("quizFeedback").textContent = "";
-
-    question.answers.forEach(function (answer, index) {
-        const button = document.createElement("button");
-        button.type = "button";
-        button.textContent = answer;
-
-        button.addEventListener("click", function () {
-            if (answered) return;
-
-            answered = true;
-
-            if (index === question.correct) {
-                score++;
-                document.getElementById("quizFeedback").textContent =
-                    "Correct! Well done.";
-            } else {
-                document.getElementById("quizFeedback").textContent =
-                    "Not quite. Review the safety tips and try again next time.";
-            }
-        });
-
-        answers.appendChild(button);
-    });
-
-    document.getElementById("nextQuestion").textContent =
-        currentQuestion === questions.length - 1
-        ? "See Final Score"
-        : "Next Question";
-
-    answered = false;
+function estimateTime(score, length) {
+  if (length === 0) return "Enter an example password first.";
+  if (score <= 1) return "Potentially very quick to guess.";
+  if (score === 2) return "Could be guessed relatively quickly.";
+  if (score === 3) return "May resist simple guesses, but could still be vulnerable.";
+  return "Potentially much harder to guess, depending on how it was created.";
 }
-
-document.getElementById("nextQuestion").addEventListener("click", function () {
-    if (!answered) {
-        document.getElementById("quizFeedback").textContent =
-            "Please choose an answer first.";
-        return;
-    }
-
-    if (currentQuestion < questions.length - 1) {
-        currentQuestion++;
-        showQuestion();
-    } else {
-        document.getElementById("question").textContent = "Quiz completed!";
-        document.getElementById("answers").innerHTML = "";
-        document.getElementById("quizFeedback").textContent = "";
-        document.getElementById("quizScore").textContent =
-            "Your score: " + score + " out of " + questions.length;
-
-        document.getElementById("nextQuestion").textContent = "Restart Quiz";
-
-        document.getElementById("nextQuestion").onclick = function () {
-            currentQuestion = 0;
-            score = 0;
-            document.getElementById("quizScore").textContent = "";
-            document.getElementById("nextQuestion").onclick = null;
-            showQuestion();
-        };
-    }
-});
-
-showQuestion();
+function checkPassword() {
+  const value = input.value;
+  const length = value.length;
+  let score = 0;
+  if (length >= 12) score++;
+  if (length >= 16) score++;
+  if (/[a-z]/.test(value) && /[A-Z]/.test(value)) score++;
+  if (/[0-9]/.test(value)) score++;
+  if (/[^A-Za-z0-9]/.test(value)) score++;
+  if (!length) {
+    bar.style.width = "0";
+    strength.textContent = "Strength: Not checked";
+    crack.textContent = "Enter an example password to see guidance.";
+    tips.innerHTML = "<li>Use a long, unique passphrase.</li><li>Never reuse passwords.</li><li>Use a password manager and enable two-factor authentication.</li>";
+    return;
+  }
+  let label, color, width;
+  if (length < 8 || score <= 1) {
+    label = "Weak"; color = "#f87171"; width = "25%";
+  } else if (score <= 2) {
+    label = "Fair"; color = "#fb923c"; width = "45%";
+  } else if (score <= 3) {
+    label = "Good"; color = "#facc15"; width = "70%";
+  } else {
+    label = "Strong pattern"; color = "#4ade80"; width = "100%";
+  }
+  bar.style.width = width;
+  bar.style.background = color;
+  strength.textContent = "Strength: " + label;
+  crack.textContent = estimateTime(score, length);
+  const advice = [];
+  if (length < 16) advice.push("Consider a longer password or passphrase (16+ characters is a useful goal).");
+  if (!/[a-z]/.test(value) || !/[A-Z]/.test(value)) advice.push("Mixing character types may help, but length and unpredictability matter more.");
+  if (!/[0-9]/.test(value)) advice.push("You may include numbers if they are not predictable.");
+  if (!/[^A-Za-z0-9]/.test(value)) advice.push("A symbol can help when used unpredictably.");
+  advice.push("Avoid names, birthdays, common phrases, and predictable substitutions.");
+  advice.push("Use a unique password for every account and consider a password manager.");
+  advice.push("Enable two-factor authentication where available.");
+  tips.innerHTML = advice.map(item => "<li>" + item + "</li>").join("");
+}
+input.addEventListener("input", checkPassword);
 </script>
-
 </body>
 </html>
