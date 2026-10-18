@@ -4,26 +4,22 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CyberShield | Login</title>
-
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
   <style>
     * {
       box-sizing: border-box;
     }
-
     body {
       margin: 0;
       min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
+      padding: 20px;
       font-family: Arial, sans-serif;
       background: linear-gradient(135deg, #071426, #102e4a);
       color: #fff;
-      padding: 20px;
     }
-
     .card {
       width: 100%;
       max-width: 420px;
@@ -33,25 +29,21 @@
       border-radius: 16px;
       box-shadow: 0 15px 40px #0005;
     }
-
     h1 {
       text-align: center;
       color: #4de1c1;
       margin-bottom: 8px;
     }
-
     .subtitle {
       text-align: center;
       color: #b8c9dc;
       margin-bottom: 25px;
     }
-
     label {
       display: block;
       margin: 14px 0 7px;
       font-size: 14px;
     }
-
     input {
       width: 100%;
       padding: 12px;
@@ -61,7 +53,6 @@
       color: white;
       font-size: 16px;
     }
-
     button {
       width: 100%;
       padding: 13px;
@@ -74,42 +65,41 @@
       font-size: 16px;
       cursor: pointer;
     }
-
+    button:disabled {
+      opacity: 0.6;
+      cursor: wait;
+    }
     button.secondary {
       background: transparent;
       color: #4de1c1;
       border: 1px solid #4de1c1;
       margin-top: 10px;
     }
-
     #message {
       margin-top: 16px;
       line-height: 1.5;
       overflow-wrap: anywhere;
       color: #ffd580;
     }
-
     #dashboard {
       display: none;
       text-align: center;
     }
-
     .small {
       color: #b8c9dc;
       font-size: 13px;
       margin-top: 18px;
+      line-height: 1.5;
     }
   </style>
 </head>
-
 <body>
   <main class="card">
     <section id="authSection">
       <h1>🛡️ CyberShield</h1>
       <p class="subtitle">Cybersecurity Awareness Portal</p>
-
       <form id="authForm">
-        <label for="email">Email address</label>
+        <label for="email">Email Address</label>
         <input
           id="email"
           type="email"
@@ -117,170 +107,207 @@
           placeholder="you@example.com"
           required
         >
-
         <label for="password">Password</label>
         <input
           id="password"
           type="password"
           autocomplete="current-password"
-          placeholder="Enter password (at least 6 characters)"
+          placeholder="Enter your password"
           minlength="6"
           required
         >
-
-        <button type="submit" id="loginButton">Login</button>
-        <button type="button" class="secondary" id="registerButton">
+        <button type="submit" id="loginButton">
+          Login
+        </button>
+        <button
+          type="button"
+          class="secondary"
+          id="registerButton"
+        >
           Create Account
         </button>
       </form>
-
-      <div id="message" role="status"></div>
-
+      <div id="message" role="status" aria-live="polite"></div>
       <p class="small">
-        Use your own email address. Registration may require email confirmation.
+        Register with your email address. Email confirmation
+        may be required before you can log in.
       </p>
     </section>
-
     <section id="dashboard">
       <h1>Welcome to CyberShield</h1>
       <p>You are successfully logged in.</p>
       <p id="userEmail"></p>
-
-      <button id="logoutButton">Logout</button>
+      <button id="logoutButton">
+        Logout
+      </button>
+      <div id="logoutMessage" role="status" aria-live="polite"></div>
     </section>
   </main>
-
   <script>
-    // Supabase project settings
-    const SUPABASE_URL = "https://cpwjposjhgpnygiocjht.supabase.co";
-    const SUPABASE_KEY = "sb_publishable_Q7TrQWEMPrGRtsQqVm1Icw_e8Bapcql";
-
+    // Supabase project configuration
+    const SUPABASE_URL =
+      "https://cpwjposjhgpnygiocjht.supabase.co";
+    const SUPABASE_KEY =
+      "sb_publishable_Q7TrQWEMPrGRtsQqVm1Icw_e8Bapcql";
     const supabaseClient = window.supabase.createClient(
       SUPABASE_URL,
       SUPABASE_KEY
     );
-
     const authSection = document.getElementById("authSection");
     const dashboard = document.getElementById("dashboard");
-    const message = document.getElementById("message");
+    const authForm = document.getElementById("authForm");
     const emailInput = document.getElementById("email");
     const passwordInput = document.getElementById("password");
-
+    const loginButton = document.getElementById("loginButton");
+    const registerButton = document.getElementById("registerButton");
+    const logoutButton = document.getElementById("logoutButton");
+    const message = document.getElementById("message");
+    const logoutMessage = document.getElementById("logoutMessage");
+    const userEmail = document.getElementById("userEmail");
+    let authRequestInProgress = false;
     function showMessage(text) {
       message.textContent = text;
     }
-
+    function setBusy(busy) {
+      authRequestInProgress = busy;
+      loginButton.disabled = busy;
+      registerButton.disabled = busy;
+      loginButton.textContent = busy ? "Please wait..." : "Login";
+    }
     function showDashboard(user) {
       authSection.style.display = "none";
       dashboard.style.display = "block";
-      document.getElementById("userEmail").textContent =
-        user.email || "Logged-in user";
+      userEmail.textContent = user.email || "Logged-in user";
+      logoutMessage.textContent = "";
     }
-
     function showLogin() {
       dashboard.style.display = "none";
       authSection.style.display = "block";
     }
-
-    // Login
-    document.getElementById("loginButton").addEventListener("click", async (event) => {
+    // LOGIN
+    authForm.addEventListener("submit", async function(event) {
       event.preventDefault();
-
+      if (authRequestInProgress) return;
       const email = emailInput.value.trim();
       const password = passwordInput.value;
-
       if (!email || !password) {
         showMessage("Please enter your email and password.");
         return;
       }
-
+      setBusy(true);
       showMessage("Logging in...");
-
-      const { data, error } = await supabaseClient.auth.signInWithPassword({
-        email,
-        password
-      });
-
-      if (error) {
-        showMessage(error.message);
-        return;
+      try {
+        const { data, error } =
+          await supabaseClient.auth.signInWithPassword({
+            email: email,
+            password: password
+          });
+        if (error) {
+          showMessage(error.message);
+          return;
+        }
+        if (data.user) {
+          showDashboard(data.user);
+        } else {
+          showMessage("Login failed. Please try again.");
+        }
+      } catch (error) {
+        showMessage("Connection error. Please try again.");
+      } finally {
+        setBusy(false);
       }
-
-      showDashboard(data.user);
     });
-
-    // Registration
-    document.getElementById("registerButton").addEventListener("click", async () => {
+    // REGISTRATION
+    registerButton.addEventListener("click", async function() {
+      if (authRequestInProgress) return;
       const email = emailInput.value.trim();
       const password = passwordInput.value;
-
       if (!email || !password) {
         showMessage("Enter your email and password first.");
         return;
       }
-
       if (password.length < 6) {
         showMessage("Password must be at least 6 characters.");
         return;
       }
-
+      setBusy(true);
       showMessage("Creating your account...");
-
-      const { data, error } = await supabaseClient.auth.signUp({
-        email,
-        password,
-        options: {
-          emailRedirectTo: window.location.origin + window.location.pathname
+      try {
+        const { data, error } =
+          await supabaseClient.auth.signUp({
+            email: email,
+            password: password,
+            options: {
+              emailRedirectTo: window.location.origin +
+                window.location.pathname
+            }
+          });
+        if (error) {
+          showMessage(error.message);
+          return;
         }
-      });
-
-      if (error) {
-        showMessage(error.message);
-        return;
-      }
-
-      if (data.session && data.user) {
-        showDashboard(data.user);
-      } else {
-        showMessage(
-          "Registration successful. Check your email to confirm your account, then log in."
-        );
-      }
-    });
-
-    // Logout
-    document.getElementById("logoutButton").addEventListener("click", async () => {
-      const { error } = await supabaseClient.auth.signOut();
-
-      if (error) {
-        document.getElementById("userEmail").textContent = error.message;
-        return;
-      }
-
-      showLogin();
-      showMessage("You have logged out.");
-    });
-
-    // Restore login session when the page is reopened
-    supabaseClient.auth.getSession().then(({ data, error }) => {
-      if (error) {
-        showMessage(error.message);
-        return;
-      }
-
-      if (data.session) {
-        showDashboard(data.session.user);
+        if (data.session && data.user) {
+          showDashboard(data.user);
+        } else {
+          showMessage(
+            "Registration submitted. Check your email for " +
+            "a confirmation link, then log in."
+          );
+        }
+      } catch (error) {
+        showMessage("Registration connection error. Try again.");
+      } finally {
+        setBusy(false);
       }
     });
-
-    // Respond to login/logout state changes
-    supabaseClient.auth.onAuthStateChange((_event, session) => {
-      if (session) {
-        showDashboard(session.user);
-      } else {
+    // LOGOUT
+    logoutButton.addEventListener("click", async function() {
+      logoutButton.disabled = true;
+      logoutMessage.textContent = "Logging out...";
+      try {
+        const { error } = await supabaseClient.auth.signOut();
+        if (error) {
+          logoutMessage.textContent = error.message;
+          return;
+        }
         showLogin();
+        showMessage("You have logged out successfully.");
+        passwordInput.value = "";
+      } catch (error) {
+        logoutMessage.textContent = "Logout failed. Please try again.";
+      } finally {
+        logoutButton.disabled = false;
       }
     });
+    // RESTORE EXISTING SESSION
+    async function restoreSession() {
+      try {
+        const { data, error } =
+          await supabaseClient.auth.getSession();
+        if (error) {
+          showMessage(error.message);
+          return;
+        }
+        if (data.session && data.session.user) {
+          showDashboard(data.session.user);
+        } else {
+          showLogin();
+        }
+      } catch (error) {
+        showMessage("Unable to check your login session.");
+      }
+    }
+    // LISTEN FOR AUTHENTICATION CHANGES
+    supabaseClient.auth.onAuthStateChange(
+      function(event, session) {
+        if (session && session.user) {
+          showDashboard(session.user);
+        } else {
+          showLogin();
+        }
+      }
+    );
+    restoreSession();
   </script>
 </body>
 </html>
