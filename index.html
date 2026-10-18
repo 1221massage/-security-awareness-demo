@@ -1,1 +1,1407 @@
-d6f6e227e40e9d556d2ecfd6c452f610a18903bb
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>CyberShield | Security Awareness Portal</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+:root {
+  --bg: #071426;
+  --panel: #12243a;
+  --panel2: #192f49;
+  --accent: #4de1c1;
+  --text: #f4f8ff;
+  --muted: #b8c9dc;
+  --border: #284766;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+button,
+input {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  opacity: .55;
+  cursor: wait;
+}
+
+header {
+  background: #0c1d31;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.brand {
+  color: var(--accent);
+  font-size: 23px;
+  font-weight: bold;
+}
+
+.header-user {
+  color: var(--muted);
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+
+.container {
+  width: min(1100px, 100%);
+  margin: auto;
+  padding: 22px;
+}
+
+.card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 22px;
+  margin-bottom: 18px;
+}
+
+.auth-card {
+  max-width: 440px;
+  margin: 55px auto;
+}
+
+h1,
+h2,
+h3 {
+  margin-top: 0;
+}
+
+h1 {
+  color: var(--accent);
+}
+
+.subtitle,
+.muted {
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+label {
+  display: block;
+  margin: 14px 0 7px;
+}
+
+input {
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #42617f;
+  background: #08182a;
+  color: white;
+}
+
+button {
+  border: 0;
+  padding: 12px 15px;
+  border-radius: 8px;
+  background: var(--accent);
+  color: #062034;
+  font-weight: bold;
+}
+
+.secondary {
+  background: transparent;
+  border: 1px solid var(--accent);
+  color: var(--accent);
+}
+
+.full {
+  width: 100%;
+  margin-top: 14px;
+}
+
+#authMessage,
+#toolMessage,
+#adminMessage {
+  color: #ffd580;
+  overflow-wrap: anywhere;
+  line-height: 1.6;
+  margin-top: 14px;
+}
+
+#app {
+  display: none;
+}
+
+.hero {
+  padding: 26px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #122f49, #123c4a);
+  margin-bottom: 20px;
+}
+
+.hero h1 {
+  margin-bottom: 8px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns:
+    repeat(auto-fit, minmax(min(100%, 250px), 1fr));
+  gap: 16px;
+}
+
+.tool-card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+}
+
+.tool-card p {
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.tool-card button {
+  margin-top: 8px;
+}
+
+.tool {
+  display: none;
+}
+
+.result {
+  padding: 12px;
+  margin-top: 14px;
+  border-radius: 8px;
+  background: var(--panel2);
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+  white-space: pre-line;
+}
+
+.option {
+  display: block;
+  width: 100%;
+  text-align: left;
+  margin: 9px 0;
+  background: var(--panel2);
+  color: white;
+  border: 1px solid var(--border);
+}
+
+.option:hover {
+  border-color: var(--accent);
+}
+
+.admin-heading {
+  color: var(--accent);
+}
+
+footer {
+  padding: 25px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 14px;
+  }
+
+  .card {
+    padding: 17px;
+  }
+
+  header {
+    padding: 14px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="brand">🛡️ CyberShield</div>
+
+  <div id="headerUser" class="header-user"></div>
+
+  <button id="logoutButton" class="secondary" hidden>
+    Logout
+  </button>
+</header>
+
+<main class="container">
+
+  <!-- LOGIN AND REGISTRATION -->
+
+  <section id="authSection" class="card auth-card">
+
+    <h1>Welcome to CyberShield</h1>
+
+    <p class="subtitle">
+      Cybersecurity Awareness Portal
+    </p>
+
+    <form id="authForm">
+
+      <label for="email">Email address</label>
+
+      <input
+        id="email"
+        type="email"
+        autocomplete="email"
+        placeholder="you@example.com"
+        required
+      >
+
+      <label for="password">Password</label>
+
+      <input
+        id="password"
+        type="password"
+        autocomplete="current-password"
+        placeholder="Enter password"
+        minlength="6"
+        required
+      >
+
+      <button
+        id="loginButton"
+        class="full"
+        type="submit"
+      >
+        Login
+      </button>
+
+      <button
+        id="registerButton"
+        class="full secondary"
+        type="button"
+      >
+        Create Account
+      </button>
+
+    </form>
+
+    <div
+      id="authMessage"
+      role="status"
+      aria-live="polite"
+    ></div>
+
+    <p class="muted">
+      Use your own email address. Email confirmation may be required.
+    </p>
+
+  </section>
+
+
+  <!-- LOGGED-IN DASHBOARD -->
+
+  <section id="app">
+
+    <div class="hero">
+
+      <h1>Cybersecurity Dashboard</h1>
+
+      <p>
+        Learn to recognize threats and protect your digital life.
+      </p>
+
+      <p id="welcomeEmail" class="muted"></p>
+
+    </div>
+
+
+    <!-- ADMIN ACCESS: HIDDEN UNTIL SUPABASE CONFIRMS ADMIN STATUS -->
+
+    <section
+      id="adminAccess"
+      class="card"
+      style="display:none;"
+    >
+
+      <h2 class="admin-heading">
+        🔐 Admin Dashboard
+      </h2>
+
+      <p>
+        Welcome, Administrator!
+      </p>
+
+      <p class="muted">
+        Access the CyberShield administration area.
+      </p>
+
+      <button id="openAdmin">
+        Open Admin Dashboard
+      </button>
+
+    </section>
+
+
+    <!-- ADMIN PANEL -->
+
+    <section
+      id="adminDashboard"
+      class="card"
+      style="display:none;"
+    >
+
+      <h2 class="admin-heading">
+        🛡️ CyberShield Admin Panel
+      </h2>
+
+      <p>
+        Admin access only.
+      </p>
+
+      <p class="muted">
+        Cybersecurity Awareness Management
+      </p>
+
+      <div id="adminMessage" role="status" aria-live="polite"></div>
+
+      <button id="closeAdmin" class="secondary">
+        Back to Tools
+      </button>
+
+    </section>
+
+
+    <!-- CYBERSECURITY TOOL MENU -->
+
+    <div class="grid" id="toolMenu">
+
+      <article class="tool-card">
+
+        <h3>🔑 Password Strength</h3>
+
+        <p>
+          Check password strength locally in your browser.
+        </p>
+
+        <button onclick="openTool('passwordTool')">
+          Open Tool
+        </button>
+
+      </article>
+
+
+      <article class="tool-card">
+
+        <h3>🎣 Phishing Awareness</h3>
+
+        <p>
+          Practice spotting suspicious messages.
+        </p>
+
+        <button onclick="openTool('phishingTool')">
+          Start Practice
+        </button>
+
+      </article>
+
+
+      <article class="tool-card">
+
+        <h3>🌐 URL Safety Check</h3>
+
+        <p>
+          Look for common warning signs in a web address.
+        </p>
+
+        <button onclick="openTool('urlTool')">
+          Check URL
+        </button>
+
+      </article>
+
+
+      <article class="tool-card">
+
+        <h3>📝 Cybersecurity Quiz</h3>
+
+        <p>
+          Test your knowledge and receive a score.
+        </p>
+
+        <button onclick="openTool('quizTool')">
+          Start Quiz
+        </button>
+
+      </article>
+
+    </div>
+
+    <p id="toolMessage" role="status" aria-live="polite"></p>
+
+
+    <!-- PASSWORD STRENGTH TOOL -->
+
+    <section id="passwordTool" class="card tool">
+
+      <h2>🔑 Password Strength Checker</h2>
+
+      <p class="muted">
+        Your test password is checked in this browser and is not sent
+        to Supabase by this tool. Never enter a real password on a
+        website you do not trust.
+      </p>
+
+      <label for="testPassword">
+        Password to evaluate
+      </label>
+
+      <input
+        id="testPassword"
+        type="password"
+        placeholder="Enter a test password"
+      >
+
+      <button id="checkPasswordButton" class="full">
+        Check Strength
+      </button>
+
+      <div
+        id="passwordResult"
+        class="result"
+        aria-live="polite"
+      ></div>
+
+      <button
+        class="secondary full"
+        onclick="backToMenu()"
+      >
+        Back to Dashboard
+      </button>
+
+    </section>
+
+
+    <!-- PHISHING AWARENESS TOOL -->
+
+    <section id="phishingTool" class="card tool">
+
+      <h2>🎣 Phishing Awareness Practice</h2>
+
+      <p class="muted">
+        Scenario: You receive an unexpected message claiming that your
+        bank account will be closed unless you verify your details
+        immediately through a link.
+      </p>
+
+      <p>
+        <strong>What should you do?</strong>
+      </p>
+
+      <button
+        class="option"
+        onclick="phishingAnswer(false)"
+      >
+        A. Click the link and enter my password.
+      </button>
+
+      <button
+        class="option"
+        onclick="phishingAnswer(true)"
+      >
+        B. Avoid the link and contact the bank using its official app
+        or a trusted contact method.
+      </button>
+
+      <button
+        class="option"
+        onclick="phishingAnswer(false)"
+      >
+        C. Forward the message to friends before checking it.
+      </button>
+
+      <div
+        id="phishingResult"
+        class="result"
+        aria-live="polite"
+      ></div>
+
+      <button
+        class="secondary full"
+        onclick="backToMenu()"
+      >
+        Back to Dashboard
+      </button>
+
+    </section>
+
+
+    <!-- URL SAFETY TOOL -->
+
+    <section id="urlTool" class="card tool">
+
+      <h2>🌐 URL Safety Checker</h2>
+
+      <p class="muted">
+        This tool checks for a few common warning signs only.
+        It cannot confirm whether a website is safe or malicious.
+      </p>
+
+      <label for="urlInput">
+        Website address
+      </label>
+
+      <input
+        id="urlInput"
+        type="text"
+        placeholder="https://example.com"
+      >
+
+      <button id="checkUrlButton" class="full">
+        Analyze URL
+      </button>
+
+      <div
+        id="urlResult"
+        class="result"
+        aria-live="polite"
+      ></div>
+
+      <button
+        class="secondary full"
+        onclick="backToMenu()"
+      >
+        Back to Dashboard
+      </button>
+
+    </section>
+
+
+    <!-- CYBERSECURITY QUIZ -->
+
+    <section id="quizTool" class="card tool">
+
+      <h2>📝 Cybersecurity Quiz</h2>
+
+      <p id="quizProgress" class="muted"></p>
+
+      <h3 id="quizQuestion"></h3>
+
+      <div id="quizOptions"></div>
+
+      <div
+        id="quizResult"
+        class="result"
+        aria-live="polite"
+      ></div>
+
+      <button
+        id="nextQuestionButton"
+        class="full"
+        hidden
+      >
+        Next Question
+      </button>
+
+      <button
+        class="secondary full"
+        onclick="backToMenu()"
+      >
+        Back to Dashboard
+      </button>
+
+    </section>
+
+  </section>
+
+</main>
+
+
+<footer>
+  CyberShield — Cybersecurity Awareness &amp; Education
+</footer>
+
+
+<script>
+(() => {
+  "use strict";
+
+  // SUPABASE CONFIGURATION
+
+  const SUPABASE_URL =
+    "https://cpwjposjhgpnygiocjht.supabase.co";
+
+  const SUPABASE_KEY =
+    "sb_publishable_Q7TrQWEMPrGRtsQqVm1Icw_e8Bapcql";
+
+
+  // PAGE ELEMENTS
+
+  const authSection = document.getElementById("authSection");
+  const app = document.getElementById("app");
+  const authForm = document.getElementById("authForm");
+  const authMessage = document.getElementById("authMessage");
+
+  const loginButton = document.getElementById("loginButton");
+  const registerButton = document.getElementById("registerButton");
+  const logoutButton = document.getElementById("logoutButton");
+
+  const emailInput = document.getElementById("email");
+  const passwordInput = document.getElementById("password");
+
+  const adminAccess = document.getElementById("adminAccess");
+  const adminDashboard = document.getElementById("adminDashboard");
+  const adminMessage = document.getElementById("adminMessage");
+
+  let client = null;
+  let busy = false;
+  let currentUser = null;
+  let currentUserIsAdmin = false;
+
+
+  // AUTHENTICATION MESSAGES
+
+  function setAuthMessage(message) {
+    authMessage.textContent = message;
+  }
+
+
+  function setBusy(value) {
+    busy = value;
+
+    loginButton.disabled = value;
+    registerButton.disabled = value;
+
+    loginButton.textContent = value
+      ? "Please wait..."
+      : "Login";
+  }
+
+
+  // ADMIN ACCESS CHECK
+  // Supabase RLS must restrict users to their own admin_users row.
+
+  async function checkAdmin(user) {
+    currentUserIsAdmin = false;
+
+    adminAccess.style.display = "none";
+    adminDashboard.style.display = "none";
+    adminMessage.textContent = "";
+
+    if (!user || !client) {
+      return false;
+    }
+
+    try {
+      const { data, error } = await client
+        .from("admin_users")
+        .select("user_id")
+        .eq("user_id", user.id)
+        .maybeSingle();
+
+      if (error) {
+        console.error(
+          "Admin status check failed:",
+          error.message
+        );
+
+        adminMessage.textContent =
+          "Admin status could not be verified.";
+
+        return false;
+      }
+
+      currentUserIsAdmin = Boolean(data);
+
+      if (currentUserIsAdmin && currentUser?.id === user.id) {
+        adminAccess.style.display = "block";
+      }
+
+      return currentUserIsAdmin;
+
+    } catch (error) {
+      console.error("Admin check error:", error);
+
+      currentUserIsAdmin = false;
+
+      adminAccess.style.display = "none";
+      adminDashboard.style.display = "none";
+
+      return false;
+    }
+  }
+
+
+  // SHOW LOGGED-IN DASHBOARD
+
+  function showDashboard(user) {
+    if (!user) return;
+
+    currentUser = user;
+
+    authSection.style.display = "none";
+    app.style.display = "block";
+    logoutButton.hidden = false;
+
+    document.getElementById("headerUser").textContent =
+      user.email || "";
+
+    document.getElementById("welcomeEmail").textContent =
+      "Signed in as " + (user.email || "user");
+
+    backToMenu();
+
+    // Admin access remains hidden until Supabase confirms it.
+    checkAdmin(user);
+  }
+
+
+  // SHOW LOGIN SCREEN
+
+  function showLogin(message = "") {
+    currentUser = null;
+    currentUserIsAdmin = false;
+
+    app.style.display = "none";
+    authSection.style.display = "block";
+
+    logoutButton.hidden = true;
+
+    document.getElementById("headerUser").textContent = "";
+
+    adminAccess.style.display = "none";
+    adminDashboard.style.display = "none";
+    adminMessage.textContent = "";
+
+    closeAllTools();
+
+    setAuthMessage(message);
+  }
+
+
+  // CLOSE TOOLS AND RETURN TO THE MENU
+
+  function closeAllTools() {
+    document.querySelectorAll(".tool").forEach(tool => {
+      tool.style.display = "none";
+    });
+
+    document.getElementById("toolMenu").style.display = "grid";
+    document.getElementById("toolMessage").textContent = "";
+
+    adminDashboard.style.display = "none";
+
+    adminAccess.style.display =
+      currentUserIsAdmin ? "block" : "none";
+  }
+
+
+  // OPEN A CYBERSECURITY TOOL
+
+  window.openTool = function(id) {
+    if (!currentUser) return;
+
+    const tool = document.getElementById(id);
+
+    if (!tool || !tool.classList.contains("tool")) {
+      return;
+    }
+
+    closeAllTools();
+
+    document.getElementById("toolMenu").style.display = "none";
+    adminAccess.style.display = "none";
+
+    tool.style.display = "block";
+
+    document.getElementById("toolMessage").textContent = "";
+  };
+
+
+  // RETURN TO THE MAIN DASHBOARD
+
+  window.backToMenu = function() {
+    closeAllTools();
+
+    document.getElementById("passwordResult").textContent = "";
+    document.getElementById("phishingResult").textContent = "";
+    document.getElementById("urlResult").textContent = "";
+    document.getElementById("quizResult").textContent = "";
+  };
+
+
+  // ADMIN BUTTON HANDLERS
+
+  document.getElementById("openAdmin")
+    .addEventListener("click", async () => {
+
+      if (!currentUser || !currentUserIsAdmin) {
+        adminAccess.style.display = "none";
+        adminDashboard.style.display = "none";
+        return;
+      }
+
+      // Verify authorization again before opening the panel.
+      const confirmed = await checkAdmin(currentUser);
+
+      if (!confirmed || !currentUser) {
+        return;
+      }
+
+      closeAllTools();
+
+      document.getElementById("toolMenu").style.display = "none";
+
+      adminAccess.style.display = "none";
+      adminDashboard.style.display = "block";
+
+      adminMessage.textContent =
+        "Administrator access verified.";
+    });
+
+
+  document.getElementById("closeAdmin")
+    .addEventListener("click", () => {
+
+      adminDashboard.style.display = "none";
+
+      if (currentUser && currentUserIsAdmin) {
+        adminAccess.style.display = "block";
+      }
+
+      document.getElementById("toolMenu").style.display = "grid";
+    });
+
+
+  // SUPABASE LIBRARY CHECK
+
+  if (!window.supabase) {
+    setAuthMessage(
+      "Supabase library could not load. Check your internet connection."
+    );
+
+    return;
+  }
+
+
+  client = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+
+
+  // LOGIN
+
+  authForm.addEventListener("submit", async event => {
+    event.preventDefault();
+
+    if (busy) return;
+
+    const email = emailInput.value.trim();
+    const password = passwordInput.value;
+
+    setBusy(true);
+    setAuthMessage("Logging in...");
+
+    try {
+      const { data, error } = await client.auth.signInWithPassword({
+        email,
+        password
+      });
+
+      if (error) {
+        setAuthMessage(error.message);
+
+      } else if (data.user) {
+        showDashboard(data.user);
+
+      } else {
+        setAuthMessage(
+          "Login could not be completed. Please try again."
+        );
+      }
+
+    } catch (error) {
+      setAuthMessage(
+        "Network error. Please check your connection."
+      );
+
+    } finally {
+      setBusy(false);
+    }
+  });
+
+
+  // REGISTRATION
+
+  registerButton.addEventListener("click", async () => {
+    if (busy) return;
+
+    const email = emailInput.value.trim();
+    const password = passwordInput.value;
+
+    if (!email || !password) {
+      setAuthMessage(
+        "Enter your email address and password first."
+      );
+
+      return;
+    }
+
+    if (password.length < 6) {
+      setAuthMessage(
+        "Password must contain at least 6 characters."
+      );
+
+      return;
+    }
+
+    setBusy(true);
+    setAuthMessage("Creating account...");
+
+    try {
+      const { data, error } = await client.auth.signUp({
+        email,
+        password,
+        options: {
+          emailRedirectTo:
+            window.location.origin + window.location.pathname
+        }
+      });
+
+      if (error) {
+        setAuthMessage(error.message);
+
+      } else if (data.session && data.user) {
+        showDashboard(data.user);
+
+      } else {
+        setAuthMessage(
+          "Registration submitted. Check your email for a confirmation link."
+        );
+      }
+
+    } catch (error) {
+      setAuthMessage(
+        "Registration failed. Please check your connection."
+      );
+
+    } finally {
+      setBusy(false);
+    }
+  });
+
+
+  // LOGOUT
+
+  logoutButton.addEventListener("click", async () => {
+    if (!client) return;
+
+    logoutButton.disabled = true;
+
+    try {
+      const { error } = await client.auth.signOut();
+
+      if (error) {
+        document.getElementById("toolMessage").textContent =
+          error.message;
+
+      } else {
+        passwordInput.value = "";
+
+        showLogin(
+          "You have logged out successfully."
+        );
+      }
+
+    } catch (error) {
+      document.getElementById("toolMessage").textContent =
+        "Logout failed. Please try again.";
+
+    } finally {
+      logoutButton.disabled = false;
+    }
+  });
+
+
+  // RESTORE EXISTING SESSION
+
+  client.auth.getSession()
+    .then(({ data, error }) => {
+
+      if (error) {
+        showLogin(error.message);
+
+      } else if (data.session && data.session.user) {
+        showDashboard(data.session.user);
+
+      } else {
+        showLogin();
+      }
+
+    })
+    .catch(() => {
+      showLogin(
+        "Could not restore your session. Please log in."
+      );
+    });
+
+
+  // PASSWORD STRENGTH CHECKER
+
+  document.getElementById("checkPasswordButton")
+    .addEventListener("click", () => {
+
+      const value =
+        document.getElementById("testPassword").value;
+
+      const result =
+        document.getElementById("passwordResult");
+
+      if (!value) {
+        result.textContent =
+          "Enter a test password to evaluate.";
+
+        return;
+      }
+
+      let score = 0;
+
+      if (value.length >= 12) score++;
+      if (/[a-z]/.test(value)) score++;
+      if (/[A-Z]/.test(value)) score++;
+      if (/[0-9]/.test(value)) score++;
+      if (/[^A-Za-z0-9]/.test(value)) score++;
+
+      let rating = "Very weak";
+
+      if (score === 2) rating = "Weak";
+      if (score === 3) rating = "Fair";
+      if (score === 4) rating = "Strong";
+      if (score === 5) rating = "Very strong";
+
+      result.textContent =
+        "Estimated strength: " + rating +
+        ". Use a long, unique password or passphrase. " +
+        "This is a basic estimate, not a security guarantee.";
+    });
+
+
+  // PHISHING AWARENESS PRACTICE
+
+  window.phishingAnswer = function(correct) {
+    const result =
+      document.getElementById("phishingResult");
+
+    result.textContent = correct
+      ? "Correct! Avoid unexpected links and contact the organization through a trusted official channel."
+      : "Not the safest choice. Unexpected urgency and requests for credentials are warning signs. Use an official channel instead.";
+  };
+
+
+  // URL SAFETY CHECKER
+
+  document.getElementById("checkUrlButton")
+    .addEventListener("click", () => {
+
+      const input =
+        document.getElementById("urlInput").value.trim();
+
+      const result =
+        document.getElementById("urlResult");
+
+      if (!input) {
+        result.textContent = "Enter a website address.";
+        return;
+      }
+
+      let url;
+
+      try {
+        url = new URL(
+          input.includes("://") ? input : "https://" + input
+        );
+
+      } catch {
+        result.textContent =
+          "This does not look like a valid web address.";
+
+        return;
+      }
+
+      const warnings = [];
+
+      if (url.protocol !== "https:") {
+        warnings.push(
+          "The address does not use HTTPS."
+        );
+      }
+
+      if (url.username || url.password) {
+        warnings.push(
+          "The address contains user information before the host."
+        );
+      }
+
+      if (
+        url.hostname.startsWith("xn--") ||
+        url.hostname.split(".").some(part =>
+          part.startsWith("xn--")
+        )
+      ) {
+        warnings.push(
+          "The domain contains encoded international characters."
+        );
+      }
+
+      if (/^\d{1,3}(\.\d{1,3}){3}$/.test(url.hostname)) {
+        warnings.push(
+          "The address uses an IP address instead of a regular domain."
+        );
+      }
+
+      if (
+        url.hostname.includes("-") ||
+        url.hostname.length > 40
+      ) {
+        warnings.push(
+          "The domain format deserves closer inspection."
+        );
+      }
+
+      if (warnings.length) {
+        result.textContent =
+          "Warning signs found:\n• " +
+          warnings.join("\n• ") +
+          "\n\nThis does not prove the site is malicious. Verify the domain independently.";
+
+      } else {
+        result.textContent =
+          "No basic warning signs were detected by this simple check. " +
+          "That does NOT mean the website is safe. Check the exact domain " +
+          "and use a trusted security service when needed.";
+      }
+    });
+
+
+  // CYBERSECURITY QUIZ QUESTIONS
+
+  const questions = [
+
+    {
+      q: "What should you do with an unexpected password-reset link?",
+      options: [
+        "Click immediately",
+        "Check through the official website or app",
+        "Share it with friends"
+      ],
+      answer: 1,
+      explanation:
+        "Use a trusted official channel instead of an unexpected link."
+    },
+
+    {
+      q: "Which is the safest password habit?",
+      options: [
+        "Use the same password everywhere",
+        "Use your birthday",
+        "Use unique passwords and a password manager"
+      ],
+      answer: 2,
+      explanation:
+        "Unique passwords limit damage if one account is compromised."
+    },
+
+    {
+      q: "What should you do with an unexpected email attachment?",
+      options: [
+        "Open it immediately",
+        "Verify the sender and context first",
+        "Disable security software"
+      ],
+      answer: 1,
+      explanation:
+        "Verify unexpected attachments before opening them."
+    },
+
+    {
+      q: "What does multi-factor authentication do?",
+      options: [
+        "Adds another verification step",
+        "Removes the need for passwords everywhere",
+        "Makes phishing impossible"
+      ],
+      answer: 0,
+      explanation:
+        "MFA adds a layer of protection but cannot prevent every attack."
+    },
+
+    {
+      q: "A website has HTTPS. Does that guarantee it is trustworthy?",
+      options: [
+        "Yes, always",
+        "No, malicious websites can also use HTTPS",
+        "Only on mobile phones"
+      ],
+      answer: 1,
+      explanation:
+        "HTTPS encrypts the connection; it does not guarantee honest content."
+    }
+
+  ];
+
+
+  // QUIZ STATE
+
+  let questionIndex = 0;
+  let quizScore = 0;
+  let answered = false;
+  let quizComplete = false;
+
+
+  // DISPLAY QUIZ QUESTION
+
+  function renderQuestion() {
+    answered = false;
+    quizComplete = false;
+
+    const question = questions[questionIndex];
+
+    document.getElementById("quizProgress").textContent =
+      "Question " + (questionIndex + 1) +
+      " of " + questions.length;
+
+    document.getElementById("quizQuestion").textContent =
+      question.q;
+
+    document.getElementById("quizResult").textContent = "";
+
+    const nextButton =
+      document.getElementById("nextQuestionButton");
+
+    nextButton.hidden = true;
+    nextButton.textContent = "Next Question";
+
+    const options =
+      document.getElementById("quizOptions");
+
+    options.replaceChildren();
+
+    question.options.forEach((option, index) => {
+
+      const button = document.createElement("button");
+
+      button.className = "option";
+      button.textContent = option;
+
+      button.addEventListener("click", () => {
+
+        if (answered || quizComplete) return;
+
+        answered = true;
+
+        const correct = index === question.answer;
+
+        if (correct) {
+          quizScore++;
+        }
+
+        document.getElementById("quizResult").textContent =
+          (correct ? "Correct! " : "Not quite. ") +
+          question.explanation;
+
+        Array.from(options.querySelectorAll("button"))
+          .forEach(item => {
+            item.disabled = true;
+          });
+
+        nextButton.hidden = false;
+
+        nextButton.textContent =
+          questionIndex === questions.length - 1
+            ? "Show Final Score"
+            : "Next Question";
+      });
+
+      options.appendChild(button);
+    });
+  }
+
+
+  // NEXT QUESTION AND FINAL SCORE
+
+  document.getElementById("nextQuestionButton")
+    .addEventListener("click", () => {
+
+      if (!answered || quizComplete) return;
+
+      if (questionIndex < questions.length - 1) {
+
+        questionIndex++;
+
+        renderQuestion();
+
+      } else {
+
+        quizComplete = true;
+
+        document.getElementById("quizProgress").textContent =
+          "Quiz complete";
+
+        document.getElementById("quizQuestion").textContent =
+          "Your score: " + quizScore +
+          " / " + questions.length;
+
+        document.getElementById("quizOptions").replaceChildren();
+
+        document.getElementById("quizResult").textContent =
+          quizScore === questions.length
+            ? "Excellent work! You answered every question correctly."
+            : "Keep learning and try again to improve your score.";
+
+        const nextButton =
+          document.getElementById("nextQuestionButton");
+
+        nextButton.textContent = "Try Again";
+
+        nextButton.onclick = () => {
+
+          questionIndex = 0;
+          quizScore = 0;
+          answered = false;
+          quizComplete = false;
+
+          nextButton.onclick = null;
+
+          renderQuestion();
+        };
+      }
+    });
+
+
+  // INITIALIZE QUIZ
+
+  renderQuestion();
+
+})();
+</script>
+
+</body>
+</html>
