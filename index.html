@@ -7,6 +7,7 @@
 <title>CyberShield | Security Awareness Portal</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 
 <style>
 :root {
@@ -19,9 +20,7 @@
   --border: #284766;
 }
 
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
 body {
   margin: 0;
@@ -30,14 +29,9 @@ body {
   color: var(--text);
 }
 
-button,
-input {
-  font: inherit;
-}
+button, input { font: inherit; }
 
-button {
-  cursor: pointer;
-}
+button { cursor: pointer; }
 
 button:disabled {
   opacity: .55;
@@ -86,18 +80,11 @@ header {
   margin: 55px auto;
 }
 
-h1,
-h2,
-h3 {
-  margin-top: 0;
-}
+h1, h2, h3 { margin-top: 0; }
 
-h1 {
-  color: var(--accent);
-}
+h1 { color: var(--accent); }
 
-.subtitle,
-.muted {
+.subtitle, .muted {
   color: var(--muted);
   line-height: 1.6;
 }
@@ -136,18 +123,14 @@ button {
   margin-top: 14px;
 }
 
-#authMessage,
-#toolMessage,
-#adminMessage {
+#authMessage, #toolMessage, #adminMessage {
   color: #ffd580;
   overflow-wrap: anywhere;
   line-height: 1.6;
   margin-top: 14px;
 }
 
-#app {
-  display: none;
-}
+#app { display: none; }
 
 .hero {
   padding: 26px;
@@ -156,14 +139,11 @@ button {
   margin-bottom: 20px;
 }
 
-.hero h1 {
-  margin-bottom: 8px;
-}
+.hero h1 { margin-bottom: 8px; }
 
 .grid {
   display: grid;
-  grid-template-columns:
-    repeat(auto-fit, minmax(min(100%, 250px), 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr));
   gap: 16px;
 }
 
@@ -179,13 +159,9 @@ button {
   line-height: 1.5;
 }
 
-.tool-card button {
-  margin-top: 8px;
-}
+.tool-card button { margin-top: 8px; }
 
-.tool {
-  display: none;
-}
+.tool { display: none; }
 
 .result {
   padding: 12px;
@@ -207,12 +183,15 @@ button {
   border: 1px solid var(--border);
 }
 
-.option:hover {
-  border-color: var(--accent);
-}
+.option:hover { border-color: var(--accent); }
 
-.admin-heading {
-  color: var(--accent);
+.admin-heading { color: var(--accent); }
+
+.turnstile-container {
+  margin-top: 18px;
+  display: flex;
+  justify-content: center;
+  min-height: 65px;
 }
 
 footer {
@@ -223,17 +202,9 @@ footer {
 }
 
 @media (max-width: 480px) {
-  .container {
-    padding: 14px;
-  }
-
-  .card {
-    padding: 17px;
-  }
-
-  header {
-    padding: 14px;
-  }
+  .container { padding: 14px; }
+  .card { padding: 17px; }
+  header { padding: 14px; }
 }
 </style>
 </head>
@@ -242,12 +213,8 @@ footer {
 
 <header>
   <div class="brand">🛡️ CyberShield</div>
-
   <div id="headerUser" class="header-user"></div>
-
-  <button id="logoutButton" class="secondary" hidden>
-    Logout
-  </button>
+  <button id="logoutButton" class="secondary" hidden>Logout</button>
 </header>
 
 <main class="container">
@@ -258,9 +225,7 @@ footer {
 
     <h1>Welcome to CyberShield</h1>
 
-    <p class="subtitle">
-      Cybersecurity Awareness Portal
-    </p>
+    <p class="subtitle">Cybersecurity Awareness Portal</p>
 
     <form id="authForm">
 
@@ -285,29 +250,29 @@ footer {
         required
       >
 
-      <button
-        id="loginButton"
-        class="full"
-        type="submit"
-      >
+      <!-- CLOUDFLARE TURNSTILE CAPTCHA -->
+
+      <div class="turnstile-container">
+        <div
+          class="cf-turnstile"
+          data-sitekey="0x4AAAAAAFaHjIiHA5lldtZW"
+          data-callback="onTurnstileSuccess"
+          data-expired-callback="onTurnstileExpired"
+          data-error-callback="onTurnstileError"
+        ></div>
+      </div>
+
+      <button id="loginButton" class="full" type="submit">
         Login
       </button>
 
-      <button
-        id="registerButton"
-        class="full secondary"
-        type="button"
-      >
+      <button id="registerButton" class="full secondary" type="button">
         Create Account
       </button>
 
     </form>
 
-    <div
-      id="authMessage"
-      role="status"
-      aria-live="polite"
-    ></div>
+    <div id="authMessage" role="status" aria-live="polite"></div>
 
     <p class="muted">
       Use your own email address. Email confirmation may be required.
@@ -321,135 +286,72 @@ footer {
   <section id="app">
 
     <div class="hero">
-
       <h1>Cybersecurity Dashboard</h1>
-
-      <p>
-        Learn to recognize threats and protect your digital life.
-      </p>
-
+      <p>Learn to recognize threats and protect your digital life.</p>
       <p id="welcomeEmail" class="muted"></p>
-
     </div>
 
 
-    <!-- ADMIN ACCESS: HIDDEN UNTIL SUPABASE CONFIRMS ADMIN STATUS -->
+    <!-- EXISTING ADMIN ACCESS -->
 
-    <section
-      id="adminAccess"
-      class="card"
-      style="display:none;"
-    >
+    <section id="adminAccess" class="card" style="display:none;">
 
-      <h2 class="admin-heading">
-        🔐 Admin Dashboard
-      </h2>
+      <h2 class="admin-heading">🔐 Admin Dashboard</h2>
 
-      <p>
-        Welcome, Administrator!
-      </p>
+      <p>Welcome, Administrator!</p>
 
       <p class="muted">
         Access the CyberShield administration area.
       </p>
 
-      <button id="openAdmin">
-        Open Admin Dashboard
-      </button>
+      <button id="openAdmin">Open Admin Dashboard</button>
 
     </section>
 
 
-    <!-- ADMIN PANEL -->
+    <!-- EXISTING ADMIN PANEL -->
 
-    <section
-      id="adminDashboard"
-      class="card"
-      style="display:none;"
-    >
+    <section id="adminDashboard" class="card" style="display:none;">
 
-      <h2 class="admin-heading">
-        🛡️ CyberShield Admin Panel
-      </h2>
+      <h2 class="admin-heading">🛡️ CyberShield Admin Panel</h2>
 
-      <p>
-        Admin access only.
-      </p>
+      <p>Admin access only.</p>
 
-      <p class="muted">
-        Cybersecurity Awareness Management
-      </p>
+      <p class="muted">Cybersecurity Awareness Management</p>
 
       <div id="adminMessage" role="status" aria-live="polite"></div>
 
-      <button id="closeAdmin" class="secondary">
-        Back to Tools
-      </button>
+      <button id="closeAdmin" class="secondary">Back to Tools</button>
 
     </section>
 
 
-    <!-- CYBERSECURITY TOOL MENU -->
+    <!-- TOOL MENU -->
 
     <div class="grid" id="toolMenu">
 
       <article class="tool-card">
-
         <h3>🔑 Password Strength</h3>
-
-        <p>
-          Check password strength locally in your browser.
-        </p>
-
-        <button onclick="openTool('passwordTool')">
-          Open Tool
-        </button>
-
+        <p>Check password strength locally in your browser.</p>
+        <button onclick="openTool('passwordTool')">Open Tool</button>
       </article>
 
-
       <article class="tool-card">
-
         <h3>🎣 Phishing Awareness</h3>
-
-        <p>
-          Practice spotting suspicious messages.
-        </p>
-
-        <button onclick="openTool('phishingTool')">
-          Start Practice
-        </button>
-
+        <p>Practice spotting suspicious messages.</p>
+        <button onclick="openTool('phishingTool')">Start Practice</button>
       </article>
 
-
       <article class="tool-card">
-
         <h3>🌐 URL Safety Check</h3>
-
-        <p>
-          Look for common warning signs in a web address.
-        </p>
-
-        <button onclick="openTool('urlTool')">
-          Check URL
-        </button>
-
+        <p>Look for common warning signs in a web address.</p>
+        <button onclick="openTool('urlTool')">Check URL</button>
       </article>
 
-
       <article class="tool-card">
-
         <h3>📝 Cybersecurity Quiz</h3>
-
-        <p>
-          Test your knowledge and receive a score.
-        </p>
-
-        <button onclick="openTool('quizTool')">
-          Start Quiz
-        </button>
-
+        <p>Test your knowledge and receive a score.</p>
+        <button onclick="openTool('quizTool')">Start Quiz</button>
       </article>
 
     </div>
@@ -469,30 +371,18 @@ footer {
         website you do not trust.
       </p>
 
-      <label for="testPassword">
-        Password to evaluate
-      </label>
+      <label for="testPassword">Password to evaluate</label>
 
-      <input
-        id="testPassword"
-        type="password"
-        placeholder="Enter a test password"
-      >
+      <input id="testPassword" type="password"
+        placeholder="Enter a test password">
 
       <button id="checkPasswordButton" class="full">
         Check Strength
       </button>
 
-      <div
-        id="passwordResult"
-        class="result"
-        aria-live="polite"
-      ></div>
+      <div id="passwordResult" class="result" aria-live="polite"></div>
 
-      <button
-        class="secondary full"
-        onclick="backToMenu()"
-      >
+      <button class="secondary full" onclick="backToMenu()">
         Back to Dashboard
       </button>
 
@@ -511,42 +401,24 @@ footer {
         immediately through a link.
       </p>
 
-      <p>
-        <strong>What should you do?</strong>
-      </p>
+      <p><strong>What should you do?</strong></p>
 
-      <button
-        class="option"
-        onclick="phishingAnswer(false)"
-      >
+      <button class="option" onclick="phishingAnswer(false)">
         A. Click the link and enter my password.
       </button>
 
-      <button
-        class="option"
-        onclick="phishingAnswer(true)"
-      >
+      <button class="option" onclick="phishingAnswer(true)">
         B. Avoid the link and contact the bank using its official app
         or a trusted contact method.
       </button>
 
-      <button
-        class="option"
-        onclick="phishingAnswer(false)"
-      >
+      <button class="option" onclick="phishingAnswer(false)">
         C. Forward the message to friends before checking it.
       </button>
 
-      <div
-        id="phishingResult"
-        class="result"
-        aria-live="polite"
-      ></div>
+      <div id="phishingResult" class="result" aria-live="polite"></div>
 
-      <button
-        class="secondary full"
-        onclick="backToMenu()"
-      >
+      <button class="secondary full" onclick="backToMenu()">
         Back to Dashboard
       </button>
 
@@ -564,30 +436,15 @@ footer {
         It cannot confirm whether a website is safe or malicious.
       </p>
 
-      <label for="urlInput">
-        Website address
-      </label>
+      <label for="urlInput">Website address</label>
 
-      <input
-        id="urlInput"
-        type="text"
-        placeholder="https://example.com"
-      >
+      <input id="urlInput" type="text" placeholder="https://example.com">
 
-      <button id="checkUrlButton" class="full">
-        Analyze URL
-      </button>
+      <button id="checkUrlButton" class="full">Analyze URL</button>
 
-      <div
-        id="urlResult"
-        class="result"
-        aria-live="polite"
-      ></div>
+      <div id="urlResult" class="result" aria-live="polite"></div>
 
-      <button
-        class="secondary full"
-        onclick="backToMenu()"
-      >
+      <button class="secondary full" onclick="backToMenu()">
         Back to Dashboard
       </button>
 
@@ -606,24 +463,13 @@ footer {
 
       <div id="quizOptions"></div>
 
-      <div
-        id="quizResult"
-        class="result"
-        aria-live="polite"
-      ></div>
+      <div id="quizResult" class="result" aria-live="polite"></div>
 
-      <button
-        id="nextQuestionButton"
-        class="full"
-        hidden
-      >
+      <button id="nextQuestionButton" class="full" hidden>
         Next Question
       </button>
 
-      <button
-        class="secondary full"
-        onclick="backToMenu()"
-      >
+      <button class="secondary full" onclick="backToMenu()">
         Back to Dashboard
       </button>
 
@@ -632,7 +478,6 @@ footer {
   </section>
 
 </main>
-
 
 <footer>
   CyberShield — Cybersecurity Awareness &amp; Education
@@ -675,13 +520,64 @@ footer {
   let currentUser = null;
   let currentUserIsAdmin = false;
 
+  // CAPTCHA TOKEN
+
+  let captchaToken = null;
+  let captchaError = false;
+
+  window.onTurnstileSuccess = function(token) {
+    captchaToken = token;
+    captchaError = false;
+    setAuthMessage("");
+  };
+
+  window.onTurnstileExpired = function() {
+    captchaToken = null;
+    setAuthMessage("CAPTCHA expired. Please complete it again.");
+  };
+
+  window.onTurnstileError = function() {
+    captchaToken = null;
+    captchaError = true;
+    setAuthMessage(
+      "CAPTCHA could not load. Refresh the page and try again."
+    );
+  };
+
+  function resetTurnstile() {
+    captchaToken = null;
+
+    if (window.turnstile) {
+      try {
+        window.turnstile.reset();
+      } catch (error) {
+        console.error("CAPTCHA reset failed:", error);
+      }
+    }
+  }
+
+  function getCaptchaToken() {
+    if (captchaError) {
+      setAuthMessage(
+        "CAPTCHA is unavailable. Refresh the page and try again."
+      );
+      return null;
+    }
+
+    if (!captchaToken) {
+      setAuthMessage("Please complete the CAPTCHA first.");
+      return null;
+    }
+
+    return captchaToken;
+  }
+
 
   // AUTHENTICATION MESSAGES
 
   function setAuthMessage(message) {
     authMessage.textContent = message;
   }
-
 
   function setBusy(value) {
     busy = value;
@@ -696,7 +592,6 @@ footer {
 
 
   // ADMIN ACCESS CHECK
-  // Supabase RLS must restrict users to their own admin_users row.
 
   async function checkAdmin(user) {
     currentUserIsAdmin = false;
@@ -740,7 +635,6 @@ footer {
       console.error("Admin check error:", error);
 
       currentUserIsAdmin = false;
-
       adminAccess.style.display = "none";
       adminDashboard.style.display = "none";
 
@@ -768,7 +662,6 @@ footer {
 
     backToMenu();
 
-    // Admin access remains hidden until Supabase confirms it.
     checkAdmin(user);
   }
 
@@ -781,7 +674,6 @@ footer {
 
     app.style.display = "none";
     authSection.style.display = "block";
-
     logoutButton.hidden = true;
 
     document.getElementById("headerUser").textContent = "";
@@ -791,12 +683,11 @@ footer {
     adminMessage.textContent = "";
 
     closeAllTools();
-
     setAuthMessage(message);
   }
 
 
-  // CLOSE TOOLS AND RETURN TO THE MENU
+  // CLOSE TOOLS AND RETURN TO MENU
 
   function closeAllTools() {
     document.querySelectorAll(".tool").forEach(tool => {
@@ -813,7 +704,7 @@ footer {
   }
 
 
-  // OPEN A CYBERSECURITY TOOL
+  // OPEN A TOOL
 
   window.openTool = function(id) {
     if (!currentUser) return;
@@ -835,7 +726,7 @@ footer {
   };
 
 
-  // RETURN TO THE MAIN DASHBOARD
+  // RETURN TO DASHBOARD
 
   window.backToMenu = function() {
     closeAllTools();
@@ -858,7 +749,6 @@ footer {
         return;
       }
 
-      // Verify authorization again before opening the panel.
       const confirmed = await checkAdmin(currentUser);
 
       if (!confirmed || !currentUser) {
@@ -896,10 +786,8 @@ footer {
     setAuthMessage(
       "Supabase library could not load. Check your internet connection."
     );
-
     return;
   }
-
 
   client = window.supabase.createClient(
     SUPABASE_URL,
@@ -907,7 +795,7 @@ footer {
   );
 
 
-  // LOGIN
+  // LOGIN WITH CAPTCHA
 
   authForm.addEventListener("submit", async event => {
     event.preventDefault();
@@ -916,6 +804,9 @@ footer {
 
     const email = emailInput.value.trim();
     const password = passwordInput.value;
+    const token = getCaptchaToken();
+
+    if (!token) return;
 
     setBusy(true);
     setAuthMessage("Logging in...");
@@ -923,7 +814,10 @@ footer {
     try {
       const { data, error } = await client.auth.signInWithPassword({
         email,
-        password
+        password,
+        options: {
+          captchaToken: token
+        }
       });
 
       if (error) {
@@ -939,17 +833,20 @@ footer {
       }
 
     } catch (error) {
+      console.error("Login error:", error);
+
       setAuthMessage(
         "Network error. Please check your connection."
       );
 
     } finally {
+      resetTurnstile();
       setBusy(false);
     }
   });
 
 
-  // REGISTRATION
+  // REGISTRATION WITH CAPTCHA
 
   registerButton.addEventListener("click", async () => {
     if (busy) return;
@@ -961,7 +858,6 @@ footer {
       setAuthMessage(
         "Enter your email address and password first."
       );
-
       return;
     }
 
@@ -969,9 +865,12 @@ footer {
       setAuthMessage(
         "Password must contain at least 6 characters."
       );
-
       return;
     }
+
+    const token = getCaptchaToken();
+
+    if (!token) return;
 
     setBusy(true);
     setAuthMessage("Creating account...");
@@ -982,7 +881,8 @@ footer {
         password,
         options: {
           emailRedirectTo:
-            window.location.origin + window.location.pathname
+            window.location.origin + window.location.pathname,
+          captchaToken: token
         }
       });
 
@@ -999,11 +899,14 @@ footer {
       }
 
     } catch (error) {
+      console.error("Registration error:", error);
+
       setAuthMessage(
         "Registration failed. Please check your connection."
       );
 
     } finally {
+      resetTurnstile();
       setBusy(false);
     }
   });
@@ -1078,7 +981,6 @@ footer {
       if (!value) {
         result.textContent =
           "Enter a test password to evaluate.";
-
         return;
       }
 
@@ -1142,7 +1044,6 @@ footer {
       } catch {
         result.textContent =
           "This does not look like a valid web address.";
-
         return;
       }
 
@@ -1298,6 +1199,7 @@ footer {
 
     nextButton.hidden = true;
     nextButton.textContent = "Next Question";
+    nextButton.onclick = null;
 
     const options =
       document.getElementById("quizOptions");
@@ -1319,9 +1221,7 @@ footer {
 
         const correct = index === question.answer;
 
-        if (correct) {
-          quizScore++;
-        }
+        if (correct) quizScore++;
 
         document.getElementById("quizResult").textContent =
           (correct ? "Correct! " : "Not quite. ") +
@@ -1350,16 +1250,22 @@ footer {
   document.getElementById("nextQuestionButton")
     .addEventListener("click", () => {
 
-      if (!answered || quizComplete) return;
+      if (quizComplete) {
+        questionIndex = 0;
+        quizScore = 0;
+        answered = false;
+        quizComplete = false;
+        renderQuestion();
+        return;
+      }
+
+      if (!answered) return;
 
       if (questionIndex < questions.length - 1) {
-
         questionIndex++;
-
         renderQuestion();
 
       } else {
-
         quizComplete = true;
 
         document.getElementById("quizProgress").textContent =
@@ -1380,18 +1286,7 @@ footer {
           document.getElementById("nextQuestionButton");
 
         nextButton.textContent = "Try Again";
-
-        nextButton.onclick = () => {
-
-          questionIndex = 0;
-          quizScore = 0;
-          answered = false;
-          quizComplete = false;
-
-          nextButton.onclick = null;
-
-          renderQuestion();
-        };
+        nextButton.hidden = false;
       }
     });
 
