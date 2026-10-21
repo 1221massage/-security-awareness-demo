@@ -517,7 +517,7 @@
       window.setTimeout(waitForTurnstile, 400);
       return;
     }
-    const container = $("turnstileContainer");
+    const container = $("turnstileContainer"); by
     if (!container || turnstileWidgetId !== null) return;
     try {
       turnstileWidgetId = window.turnstile.render(container, {
@@ -1126,7 +1126,7 @@
         "error"
       );
     } else {
-      const analytics = normalizeRows(analyticsResult.data)[0] || {};
+      const const analytics = normalizeRows(analyticsResult.data)[0] || {};
       $("totalUsers").textContent = firstDefined(
         analytics,
         ["total_users"],
@@ -1135,7 +1135,7 @@
       $("totalQuizzes").textContent = firstDefined(
         analytics,
         ["total_quizzes"],
-        "—"
+        "—"j
       );
       const average = firstDefined(
         analytics,
@@ -1195,54 +1195,4 @@
         body.appendChild(row);
       });
     }
-    setMessage(
-      "adminMessage",
-      "Admin data refreshed.",
-      "success"
-    );
-  }
-  $("openAdminButton").addEventListener("click", async () => {
-    if (!currentUser || currentUser.id !== ADMIN_USER_ID) {
-      setMessage("adminMessage", "Admin access required.", "error");
-      return;
-    }
-    $("progressPanel").hidden = true;
-    $("leaderboardPanel").hidden = true;
-    $("adminDashboard").hidden = false;
-    await loadAdminDashboard();
-  });
-  $("refreshAdminButton").addEventListener(
-    "click",
-    loadAdminDashboard
-  );
-  $("closeAdminButton").addEventListener("click", () => {
-    $("adminDashboard").hidden = true;
-    $("progressPanel").hidden = false;
-    $("leaderboardPanel").hidden = false;
-  });
-  // --------------------------------------------------
-  // STARTUP AND SESSION RESTORE
-  // --------------------------------------------------
-  waitForTurnstile();
-  client.auth.getSession().then(async ({ data, error }) => {
-    if (error) {
-      console.error("Session restore failed:", error.message);
-      return;
-    }
-    if (data.session && data.session.user) {
-      await showDashboard(data.session.user);
-    }
-  });
-  client.auth.onAuthStateChange((event, session) => {
-    if (event === "SIGNED_OUT") {
-      currentUser = null;
-      $("dashboardPanel").hidden = true;
-      $("authPanel").hidden = false;
-      $("logoutButton").hidden = true;
-      $("signedInEmail").textContent = "";
-    }
-  });
-})();
-</script>
-</body>
-</html>
+    v
