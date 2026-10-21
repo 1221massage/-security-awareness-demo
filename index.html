@@ -517,7 +517,7 @@
       window.setTimeout(waitForTurnstile, 400);
       return;
     }
-    const container = $("turnstileContainer"); by
+    const container = $("turnstileContainer");
     if (!container || turnstileWidgetId !== null) return;
     try {
       turnstileWidgetId = window.turnstile.render(container, {
