@@ -1,216 +1,226 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CyberShield | Security Awareness</title>
 
-<title>CyberShield | Security Awareness Portal</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+  <style>
+    :root {
+      --bg: #071426;
+      --panel: #12243a;
+      --panel2: #192f49;
+      --accent: #4de1c1;
+      --text: #f4f8ff;
+      --muted: #b8c9dc;
+      --border: #284766;
+    }
 
-<style>
-:root {
-  --bg: #071426;
-  --panel: #12243a;
-  --panel2: #192f49;
-  --accent: #4de1c1;
-  --text: #f4f8ff;
-  --muted: #b8c9dc;
-  --border: #284766;
-}
+    * { box-sizing: border-box; }
 
-* { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
 
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: var(--bg);
-  color: var(--text);
-}
+    button, input { font: inherit; }
+    button { cursor: pointer; }
 
-button, input { font: inherit; }
+    button:disabled {
+      opacity: .55;
+      cursor: wait;
+    }
 
-button { cursor: pointer; }
+    header {
+      background: #0c1d31;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
 
-button:disabled {
-  opacity: .55;
-  cursor: wait;
-}
+    .brand {
+      color: var(--accent);
+      font-size: 23px;
+      font-weight: bold;
+    }
 
-header {
-  background: #0c1d31;
-  padding: 16px 20px;
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  flex-wrap: wrap;
-}
+    .header-user {
+      color: var(--muted);
+      font-size: 13px;
+      overflow-wrap: anywhere;
+    }
 
-.brand {
-  color: var(--accent);
-  font-size: 23px;
-  font-weight: bold;
-}
+    .container {
+      width: min(1100px, 100%);
+      margin: auto;
+      padding: 22px;
+    }
 
-.header-user {
-  color: var(--muted);
-  font-size: 13px;
-  overflow-wrap: anywhere;
-}
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 22px;
+      margin-bottom: 18px;
+    }
 
-.container {
-  width: min(1100px, 100%);
-  margin: auto;
-  padding: 22px;
-}
+    .auth-card {
+      max-width: 440px;
+      margin: 55px auto;
+    }
 
-.card {
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 22px;
-  margin-bottom: 18px;
-}
+    h1, h2, h3 { margin-top: 0; }
+    h1 { color: var(--accent); }
 
-.auth-card {
-  max-width: 440px;
-  margin: 55px auto;
-}
+    .subtitle, .muted {
+      color: var(--muted);
+      line-height: 1.6;
+    }
 
-h1, h2, h3 { margin-top: 0; }
+    label {
+      display: block;
+      margin: 14px 0 7px;
+    }
 
-h1 { color: var(--accent); }
+    input {
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid #42617f;
+      background: #08182a;
+      color: white;
+    }
 
-.subtitle, .muted {
-  color: var(--muted);
-  line-height: 1.6;
-}
+    button {
+      border: 0;
+      padding: 12px 15px;
+      border-radius: 8px;
+      background: var(--accent);
+      color: #062034;
+      font-weight: bold;
+    }
 
-label {
-  display: block;
-  margin: 14px 0 7px;
-}
+    .secondary {
+      background: transparent;
+      border: 1px solid var(--accent);
+      color: var(--accent);
+    }
 
-input {
-  width: 100%;
-  padding: 12px;
-  border-radius: 8px;
-  border: 1px solid #42617f;
-  background: #08182a;
-  color: white;
-}
+    .full {
+      width: 100%;
+      margin-top: 14px;
+    }
 
-button {
-  border: 0;
-  padding: 12px 15px;
-  border-radius: 8px;
-  background: var(--accent);
-  color: #062034;
-  font-weight: bold;
-}
+    #authMessage, #toolMessage, #adminMessage {
+      color: #ffd580;
+      overflow-wrap: anywhere;
+      line-height: 1.6;
+      margin-top: 14px;
+    }
 
-.secondary {
-  background: transparent;
-  border: 1px solid var(--accent);
-  color: var(--accent);
-}
+    #app { display: none; }
 
-.full {
-  width: 100%;
-  margin-top: 14px;
-}
+    .hero {
+      padding: 26px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #122f49, #123c4a);
+      margin-bottom: 20px;
+    }
 
-#authMessage, #toolMessage, #adminMessage {
-  color: #ffd580;
-  overflow-wrap: anywhere;
-  line-height: 1.6;
-  margin-top: 14px;
-}
+    .hero h1 { margin-bottom: 8px; }
 
-#app { display: none; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr));
+      gap: 16px;
+    }
 
-.hero {
-  padding: 26px;
-  border-radius: 14px;
-  background: linear-gradient(135deg, #122f49, #123c4a);
-  margin-bottom: 20px;
-}
+    .tool-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+    }
 
-.hero h1 { margin-bottom: 8px; }
+    .tool-card p {
+      color: var(--muted);
+      line-height: 1.5;
+    }
 
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr));
-  gap: 16px;
-}
+    .tool-card button { margin-top: 8px; }
+    .tool { display: none; }
 
-.tool-card {
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 20px;
-}
+    .result {
+      padding: 12px;
+      margin-top: 14px;
+      border-radius: 8px;
+      background: var(--panel2);
+      line-height: 1.6;
+      overflow-wrap: anywhere;
+      white-space: pre-line;
+    }
 
-.tool-card p {
-  color: var(--muted);
-  line-height: 1.5;
-}
+    .option {
+      display: block;
+      width: 100%;
+      text-align: left;
+      margin: 9px 0;
+      background: var(--panel2);
+      color: white;
+      border: 1px solid var(--border);
+    }
 
-.tool-card button { margin-top: 8px; }
+    .option:hover { border-color: var(--accent); }
+    .admin-heading { color: var(--accent); }
 
-.tool { display: none; }
+    .turnstile-container {
+      margin-top: 18px;
+      display: flex;
+      justify-content: center;
+      min-height: 65px;
+    }
 
-.result {
-  padding: 12px;
-  margin-top: 14px;
-  border-radius: 8px;
-  background: var(--panel2);
-  line-height: 1.6;
-  overflow-wrap: anywhere;
-  white-space: pre-line;
-}
+    .table-wrap { overflow-x: auto; }
 
-.option {
-  display: block;
-  width: 100%;
-  text-align: left;
-  margin: 9px 0;
-  background: var(--panel2);
-  color: white;
-  border: 1px solid var(--border);
-}
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
 
-.option:hover { border-color: var(--accent); }
+    th, td {
+      padding: 10px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
 
-.admin-heading { color: var(--accent); }
+    td { overflow-wrap: anywhere; }
 
-.turnstile-container {
-  margin-top: 18px;
-  display: flex;
-  justify-content: center;
-  min-height: 65px;
-}
+    footer {
+      padding: 25px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 13px;
+    }
 
-footer {
-  padding: 25px;
-  text-align: center;
-  color: var(--muted);
-  font-size: 13px;
-}
-
-@media (max-width: 480px) {
-  .container { padding: 14px; }
-  .card { padding: 17px; }
-  header { padding: 14px; }
-}
-</style>
+    @media (max-width: 480px) {
+      .container { padding: 14px; }
+      .card { padding: 17px; }
+      header { padding: 14px; }
+    }
+  </style>
 </head>
 
 <body>
-
 <header>
   <div class="brand">🛡️ CyberShield</div>
   <div id="headerUser" class="header-user"></div>
@@ -220,116 +230,88 @@ footer {
 <main class="container">
 
   <!-- LOGIN AND REGISTRATION -->
-
   <section id="authSection" class="card auth-card">
-
     <h1>Welcome to CyberShield</h1>
-
     <p class="subtitle">Cybersecurity Awareness Portal</p>
 
     <form id="authForm">
-
       <label for="email">Email address</label>
-
-      <input
-        id="email"
-        type="email"
-        autocomplete="email"
-        placeholder="you@example.com"
-        required
-      >
+      <input id="email" type="email" autocomplete="email"
+             placeholder="you@example.com" required>
 
       <label for="password">Password</label>
-
-      <input
-        id="password"
-        type="password"
-        autocomplete="current-password"
-        placeholder="Enter password"
-        minlength="6"
-        required
-      >
-
-      <!-- CLOUDFLARE TURNSTILE CAPTCHA -->
+      <input id="password" type="password" autocomplete="current-password"
+             placeholder="Enter password" minlength="6" required>
 
       <div class="turnstile-container">
-        <div
-          class="cf-turnstile"
-          data-sitekey="0x4AAAAAAFaHjIiHA5lldtZW"
-          data-callback="onTurnstileSuccess"
-          data-expired-callback="onTurnstileExpired"
-          data-error-callback="onTurnstileError"
-        ></div>
+        <div id="turnstileWidget"
+             class="cf-turnstile"
+             data-sitekey="0x4AAAAAAFaHjIiHA5lldtZW"
+             data-callback="onTurnstileSuccess"
+             data-expired-callback="onTurnstileExpired"
+             data-error-callback="onTurnstileError"></div>
       </div>
 
-      <button id="loginButton" class="full" type="submit">
-        Login
-      </button>
-
+      <button id="loginButton" class="full" type="submit">Login</button>
       <button id="registerButton" class="full secondary" type="button">
         Create Account
       </button>
-
     </form>
 
     <div id="authMessage" role="status" aria-live="polite"></div>
-
     <p class="muted">
       Use your own email address. Email confirmation may be required.
     </p>
-
   </section>
 
-
-  <!-- LOGGED-IN DASHBOARD -->
-
+  <!-- DASHBOARD -->
   <section id="app">
-
     <div class="hero">
       <h1>Cybersecurity Dashboard</h1>
       <p>Learn to recognize threats and protect your digital life.</p>
       <p id="welcomeEmail" class="muted"></p>
     </div>
 
-
-    <!-- EXISTING ADMIN ACCESS -->
-
+    <!-- ADMIN ACCESS -->
     <section id="adminAccess" class="card" style="display:none;">
-
       <h2 class="admin-heading">🔐 Admin Dashboard</h2>
-
       <p>Welcome, Administrator!</p>
-
-      <p class="muted">
-        Access the CyberShield administration area.
-      </p>
-
+      <p class="muted">Access the CyberShield administration area.</p>
       <button id="openAdmin">Open Admin Dashboard</button>
-
     </section>
 
-
-    <!-- EXISTING ADMIN PANEL -->
-
+    <!-- ADMIN PANEL -->
     <section id="adminDashboard" class="card" style="display:none;">
-
       <h2 class="admin-heading">🛡️ CyberShield Admin Panel</h2>
-
       <p>Admin access only.</p>
-
       <p class="muted">Cybersecurity Awareness Management</p>
 
       <div id="adminMessage" role="status" aria-live="polite"></div>
 
-      <button id="closeAdmin" class="secondary">Back to Tools</button>
+      <button id="refreshResultsButton">Refresh Quiz Results</button>
 
+      <div class="table-wrap" style="margin-top:16px;">
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>User ID</th>
+              <th>Score</th>
+            </tr>
+          </thead>
+          <tbody id="quizResultsBody">
+            <tr>
+              <td colspan="3">Quiz results will appear here.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <button id="closeAdmin" class="secondary full">Back to Tools</button>
     </section>
 
-
     <!-- TOOL MENU -->
-
     <div class="grid" id="toolMenu">
-
       <article class="tool-card">
         <h3>🔑 Password Strength</h3>
         <p>Check password strength locally in your browser.</p>
@@ -353,164 +335,101 @@ footer {
         <p>Test your knowledge and receive a score.</p>
         <button onclick="openTool('quizTool')">Start Quiz</button>
       </article>
-
     </div>
 
     <p id="toolMessage" role="status" aria-live="polite"></p>
 
-
-    <!-- PASSWORD STRENGTH TOOL -->
-
+    <!-- PASSWORD TOOL -->
     <section id="passwordTool" class="card tool">
-
       <h2>🔑 Password Strength Checker</h2>
-
       <p class="muted">
-        Your test password is checked in this browser and is not sent
-        to Supabase by this tool. Never enter a real password on a
-        website you do not trust.
+        This tool checks your test password locally in your browser.
+        Never enter a real password on a website you do not trust.
       </p>
 
       <label for="testPassword">Password to evaluate</label>
-
-      <input id="testPassword" type="password"
-        placeholder="Enter a test password">
-
-      <button id="checkPasswordButton" class="full">
-        Check Strength
-      </button>
-
+      <input id="testPassword" type="password" placeholder="Enter a test password">
+      <button id="checkPasswordButton" class="full">Check Strength</button>
       <div id="passwordResult" class="result" aria-live="polite"></div>
 
-      <button class="secondary full" onclick="backToMenu()">
-        Back to Dashboard
-      </button>
-
+      <button class="secondary full" onclick="backToMenu()">Back to Dashboard</button>
     </section>
 
-
-    <!-- PHISHING AWARENESS TOOL -->
-
+    <!-- PHISHING TOOL -->
     <section id="phishingTool" class="card tool">
-
       <h2>🎣 Phishing Awareness Practice</h2>
-
       <p class="muted">
-        Scenario: You receive an unexpected message claiming that your
-        bank account will be closed unless you verify your details
-        immediately through a link.
+        Scenario: You receive an unexpected message claiming that your bank
+        account will be closed unless you verify your details immediately.
       </p>
-
       <p><strong>What should you do?</strong></p>
 
       <button class="option" onclick="phishingAnswer(false)">
         A. Click the link and enter my password.
       </button>
-
       <button class="option" onclick="phishingAnswer(true)">
-        B. Avoid the link and contact the bank using its official app
+        B. Avoid the link and contact the bank through its official app
         or a trusted contact method.
       </button>
-
       <button class="option" onclick="phishingAnswer(false)">
         C. Forward the message to friends before checking it.
       </button>
 
       <div id="phishingResult" class="result" aria-live="polite"></div>
-
-      <button class="secondary full" onclick="backToMenu()">
-        Back to Dashboard
-      </button>
-
+      <button class="secondary full" onclick="backToMenu()">Back to Dashboard</button>
     </section>
 
-
-    <!-- URL SAFETY TOOL -->
-
+    <!-- URL TOOL -->
     <section id="urlTool" class="card tool">
-
       <h2>🌐 URL Safety Checker</h2>
-
       <p class="muted">
-        This tool checks for a few common warning signs only.
-        It cannot confirm whether a website is safe or malicious.
+        This tool checks for common warning signs only. It cannot confirm
+        whether a website is safe or malicious.
       </p>
 
       <label for="urlInput">Website address</label>
-
       <input id="urlInput" type="text" placeholder="https://example.com">
-
       <button id="checkUrlButton" class="full">Analyze URL</button>
-
       <div id="urlResult" class="result" aria-live="polite"></div>
 
-      <button class="secondary full" onclick="backToMenu()">
-        Back to Dashboard
-      </button>
-
+      <button class="secondary full" onclick="backToMenu()">Back to Dashboard</button>
     </section>
 
-
-    <!-- CYBERSECURITY QUIZ -->
-
+    <!-- QUIZ -->
     <section id="quizTool" class="card tool">
-
       <h2>📝 Cybersecurity Quiz</h2>
-
       <p id="quizProgress" class="muted"></p>
-
       <h3 id="quizQuestion"></h3>
-
       <div id="quizOptions"></div>
-
       <div id="quizResult" class="result" aria-live="polite"></div>
-
-      <button id="nextQuestionButton" class="full" hidden>
-        Next Question
-      </button>
-
-      <button class="secondary full" onclick="backToMenu()">
-        Back to Dashboard
-      </button>
-
+      <button id="nextQuestionButton" class="full" hidden>Next Question</button>
+      <button class="secondary full" onclick="backToMenu()">Back to Dashboard</button>
     </section>
-
   </section>
-
 </main>
 
-<footer>
-  CyberShield — Cybersecurity Awareness &amp; Education
-</footer>
-
+<footer>CyberShield — Cybersecurity Awareness &amp; Education</footer>
 
 <script>
 (() => {
   "use strict";
 
   // SUPABASE CONFIGURATION
+  const SUPABASE_URL = "https://cpwjposjhgpnygiocjht.supabase.co";
+  const SUPABASE_KEY = "sb_publishable_Q7TrQWEMPrGRtsQqVm1Icw_e8Bapcql";
 
-  const SUPABASE_URL =
-    "https://cpwjposjhgpnygiocjht.supabase.co";
-
-  const SUPABASE_KEY =
-    "sb_publishable_Q7TrQWEMPrGRtsQqVm1Icw_e8Bapcql";
-
-
-  // PAGE ELEMENTS
+  // ADMIN USER UUID
+  const ADMIN_USER_ID = "5705c720-93de-4e95-a49a-7915aae782e3";
 
   const authSection = document.getElementById("authSection");
   const app = document.getElementById("app");
   const authForm = document.getElementById("authForm");
   const authMessage = document.getElementById("authMessage");
-
   const loginButton = document.getElementById("loginButton");
   const registerButton = document.getElementById("registerButton");
   const logoutButton = document.getElementById("logoutButton");
-
   const emailInput = document.getElementById("email");
   const passwordInput = document.getElementById("password");
-
   const adminAccess = document.getElementById("adminAccess");
   const adminDashboard = document.getElementById("adminDashboard");
   const adminMessage = document.getElementById("adminMessage");
@@ -519,48 +438,34 @@ footer {
   let busy = false;
   let currentUser = null;
   let currentUserIsAdmin = false;
-
-  // CAPTCHA TOKEN
-
   let captchaToken = null;
   let captchaError = false;
+  let captchaWidgetId = null;
 
-  window.onTurnstileSuccess = function(token) {
+  window.onTurnstileSuccess = token => {
     captchaToken = token;
     captchaError = false;
     setAuthMessage("");
   };
 
-  window.onTurnstileExpired = function() {
+  window.onTurnstileExpired = () => {
     captchaToken = null;
     setAuthMessage("CAPTCHA expired. Please complete it again.");
   };
 
-  window.onTurnstileError = function() {
+  window.onTurnstileError = () => {
     captchaToken = null;
     captchaError = true;
-    setAuthMessage(
-      "CAPTCHA could not load. Refresh the page and try again."
-    );
+    setAuthMessage("CAPTCHA could not load. Refresh and try again.");
   };
 
-  function resetTurnstile() {
-    captchaToken = null;
-
-    if (window.turnstile) {
-      try {
-        window.turnstile.reset();
-      } catch (error) {
-        console.error("CAPTCHA reset failed:", error);
-      }
-    }
+  function setAuthMessage(message) {
+    authMessage.textContent = message;
   }
 
   function getCaptchaToken() {
     if (captchaError) {
-      setAuthMessage(
-        "CAPTCHA is unavailable. Refresh the page and try again."
-      );
+      setAuthMessage("CAPTCHA is unavailable. Refresh and try again.");
       return null;
     }
 
@@ -572,240 +477,81 @@ footer {
     return captchaToken;
   }
 
+  function resetTurnstile() {
+    captchaToken = null;
 
-  // AUTHENTICATION MESSAGES
-
-  function setAuthMessage(message) {
-    authMessage.textContent = message;
+    if (window.turnstile && captchaWidgetId !== null) {
+      try {
+        window.turnstile.reset(captchaWidgetId);
+      } catch (error) {
+        console.error("CAPTCHA reset failed:", error);
+      }
+    }
   }
 
   function setBusy(value) {
     busy = value;
-
     loginButton.disabled = value;
     registerButton.disabled = value;
-
-    loginButton.textContent = value
-      ? "Please wait..."
-      : "Login";
+    loginButton.textContent = value ? "Please wait..." : "Login";
   }
 
-
-  // ADMIN ACCESS CHECK
-
-  async function checkAdmin(user) {
-    currentUserIsAdmin = false;
-
-    adminAccess.style.display = "none";
-    adminDashboard.style.display = "none";
-    adminMessage.textContent = "";
-
-    if (!user || !client) {
-      return false;
-    }
-
-    try {
-      const { data, error } = await client
-        .from("admin_users")
-        .select("user_id")
-        .eq("user_id", user.id)
-        .maybeSingle();
-
-      if (error) {
-        console.error(
-          "Admin status check failed:",
-          error.message
-        );
-
-        adminMessage.textContent =
-          "Admin status could not be verified.";
-
-        return false;
-      }
-
-      currentUserIsAdmin = Boolean(data);
-
-      if (currentUserIsAdmin && currentUser?.id === user.id) {
-        adminAccess.style.display = "block";
-      }
-
-      return currentUserIsAdmin;
-
-    } catch (error) {
-      console.error("Admin check error:", error);
-
-      currentUserIsAdmin = false;
-      adminAccess.style.display = "none";
-      adminDashboard.style.display = "none";
-
-      return false;
-    }
-  }
-
-
-  // SHOW LOGGED-IN DASHBOARD
-
-  function showDashboard(user) {
-    if (!user) return;
-
-    currentUser = user;
-
-    authSection.style.display = "none";
-    app.style.display = "block";
-    logoutButton.hidden = false;
-
-    document.getElementById("headerUser").textContent =
-      user.email || "";
-
-    document.getElementById("welcomeEmail").textContent =
-      "Signed in as " + (user.email || "user");
-
-    backToMenu();
-
-    checkAdmin(user);
-  }
-
-
-  // SHOW LOGIN SCREEN
-
-  function showLogin(message = "") {
-    currentUser = null;
-    currentUserIsAdmin = false;
-
-    app.style.display = "none";
-    authSection.style.display = "block";
-    logoutButton.hidden = true;
-
-    document.getElementById("headerUser").textContent = "";
-
-    adminAccess.style.display = "none";
-    adminDashboard.style.display = "none";
-    adminMessage.textContent = "";
-
-    closeAllTools();
-    setAuthMessage(message);
-  }
-
-
-  // CLOSE TOOLS AND RETURN TO MENU
-
-  function closeAllTools() {
-    document.querySelectorAll(".tool").forEach(tool => {
-      tool.style.display = "none";
-    });
-
-    document.getElementById("toolMenu").style.display = "grid";
-    document.getElementById("toolMessage").textContent = "";
-
-    adminDashboard.style.display = "none";
-
-    adminAccess.style.display =
-      currentUserIsAdmin ? "block" : "none";
-  }
-
-
-  // OPEN A TOOL
-
-  window.openTool = function(id) {
-    if (!currentUser) return;
-
-    const tool = document.getElementById(id);
-
-    if (!tool || !tool.classList.contains("tool")) {
-      return;
-    }
-
-    closeAllTools();
-
-    document.getElementById("toolMenu").style.display = "none";
-    adminAccess.style.display = "none";
-
-    tool.style.display = "block";
-
-    document.getElementById("toolMessage").textContent = "";
-  };
-
-
-  // RETURN TO DASHBOARD
-
-  window.backToMenu = function() {
-    closeAllTools();
-
-    document.getElementById("passwordResult").textContent = "";
-    document.getElementById("phishingResult").textContent = "";
-    document.getElementById("urlResult").textContent = "";
-    document.getElementById("quizResult").textContent = "";
-  };
-
-
-  // ADMIN BUTTON HANDLERS
-
-  document.getElementById("openAdmin")
-    .addEventListener("click", async () => {
-
-      if (!currentUser || !currentUserIsAdmin) {
-        adminAccess.style.display = "none";
-        adminDashboard.style.display = "none";
-        return;
-      }
-
-      const confirmed = await checkAdmin(currentUser);
-
-      if (!confirmed || !currentUser) {
-        return;
-      }
-
-      closeAllTools();
-
-      document.getElementById("toolMenu").style.display = "none";
-
-      adminAccess.style.display = "none";
-      adminDashboard.style.display = "block";
-
-      adminMessage.textContent =
-        "Administrator access verified.";
-    });
-
-
-  document.getElementById("closeAdmin")
-    .addEventListener("click", () => {
-
-      adminDashboard.style.display = "none";
-
-      if (currentUser && currentUserIsAdmin) {
-        adminAccess.style.display = "block";
-      }
-
-      document.getElementById("toolMenu").style.display = "grid";
-    });
-
-
-  // SUPABASE LIBRARY CHECK
-
+  // INITIALIZE SUPABASE
   if (!window.supabase) {
-    setAuthMessage(
-      "Supabase library could not load. Check your internet connection."
-    );
+    setAuthMessage("Supabase library could not load. Check your connection.");
     return;
   }
 
-  client = window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_KEY
-  );
+  client = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+  // ADMIN CHECK
+  async function checkAdmin(user) {
+    currentUserIsAdmin = false;
+    adminAccess.style.display = "none";
+    adminDashboard.style.display = "none";
 
-  // LOGIN WITH CAPTCHA
+    if (!user) return false;
 
+    // Verify against the existing admin_users table.
+    const { data, error } = await client
+      .from("admin_users")
+      .select("user_id")
+      .eq("user_id", user.id)
+      .maybeSingle();
+
+    if (error) {
+      console.error("Admin check failed:", error.message);
+      adminMessage.textContent = "Could not verify admin status.";
+      return false;
+    }
+
+    // Require both the existing allow-list row and the configured admin UUID.
+    currentUserIsAdmin =
+      Boolean(data) && user.id === ADMIN_USER_ID;
+
+    adminAccess.style.display = currentUserIsAdmin ? "block" : "none";
+    return currentUserIsAdmin;
+  }
+
+  // SHOW DASHBOARD
+  async function showDashboard(user) {
+    currentUser = user;
+    authSection.style.display = "none";
+    app.style.display = "block";
+    logoutButton.hidden = false;
+    document.getElementById("headerUser").textContent = user.email || "";
+    document.getElementById("welcomeEmail").textContent =
+      "Signed in as " + (user.email || "user");
+
+    await checkAdmin(user);
+  }
+
+  // LOGIN
   authForm.addEventListener("submit", async event => {
     event.preventDefault();
-
     if (busy) return;
 
-    const email = emailInput.value.trim();
-    const password = passwordInput.value;
     const token = getCaptchaToken();
-
     if (!token) return;
 
     setBusy(true);
@@ -813,63 +559,33 @@ footer {
 
     try {
       const { data, error } = await client.auth.signInWithPassword({
-        email,
-        password,
-        options: {
-          captchaToken: token
-        }
+        email: emailInput.value.trim(),
+        password: passwordInput.value,
+        options: { captchaToken: token }
       });
 
       if (error) {
         setAuthMessage(error.message);
-
       } else if (data.user) {
-        showDashboard(data.user);
-
+        await showDashboard(data.user);
+        setAuthMessage("");
       } else {
-        setAuthMessage(
-          "Login could not be completed. Please try again."
-        );
+        setAuthMessage("Login could not be completed.");
       }
-
     } catch (error) {
       console.error("Login error:", error);
-
-      setAuthMessage(
-        "Network error. Please check your connection."
-      );
-
+      setAuthMessage("Network error. Please check your connection.");
     } finally {
       resetTurnstile();
       setBusy(false);
     }
   });
 
-
-  // REGISTRATION WITH CAPTCHA
-
+  // REGISTRATION
   registerButton.addEventListener("click", async () => {
     if (busy) return;
 
-    const email = emailInput.value.trim();
-    const password = passwordInput.value;
-
-    if (!email || !password) {
-      setAuthMessage(
-        "Enter your email address and password first."
-      );
-      return;
-    }
-
-    if (password.length < 6) {
-      setAuthMessage(
-        "Password must contain at least 6 characters."
-      );
-      return;
-    }
-
     const token = getCaptchaToken();
-
     if (!token) return;
 
     setBusy(true);
@@ -877,235 +593,153 @@ footer {
 
     try {
       const { data, error } = await client.auth.signUp({
-        email,
-        password,
+        email: emailInput.value.trim(),
+        password: passwordInput.value,
         options: {
-          emailRedirectTo:
-            window.location.origin + window.location.pathname,
           captchaToken: token
         }
       });
 
       if (error) {
         setAuthMessage(error.message);
-
       } else if (data.session && data.user) {
-        showDashboard(data.user);
-
+        await showDashboard(data.user);
+        setAuthMessage("Account created successfully.");
       } else {
-        setAuthMessage(
-          "Registration submitted. Check your email for a confirmation link."
-        );
+        setAuthMessage("Account created. Check your email to confirm registration.");
       }
-
     } catch (error) {
       console.error("Registration error:", error);
-
-      setAuthMessage(
-        "Registration failed. Please check your connection."
-      );
-
+      setAuthMessage("Could not create account. Check your connection.");
     } finally {
       resetTurnstile();
       setBusy(false);
     }
   });
 
-
   // LOGOUT
-
   logoutButton.addEventListener("click", async () => {
-    if (!client) return;
+    await client.auth.signOut();
+    currentUser = null;
+    currentUserIsAdmin = false;
+    app.style.display = "none";
+    authSection.style.display = "block";
+    logoutButton.hidden = true;
+    document.getElementById("headerUser").textContent = "";
+    adminDashboard.style.display = "none";
+    adminAccess.style.display = "none";
+    backToMenu();
+  });
 
-    logoutButton.disabled = true;
-
-    try {
-      const { error } = await client.auth.signOut();
-
-      if (error) {
-        document.getElementById("toolMessage").textContent =
-          error.message;
-
-      } else {
-        passwordInput.value = "";
-
-        showLogin(
-          "You have logged out successfully."
-        );
-      }
-
-    } catch (error) {
-      document.getElementById("toolMessage").textContent =
-        "Logout failed. Please try again.";
-
-    } finally {
-      logoutButton.disabled = false;
+  // RESTORE SESSION
+  client.auth.onAuthStateChange((_event, session) => {
+    if (session?.user) {
+      showDashboard(session.user);
     }
   });
 
+  // CAPTCHA WIDGET ID
+  function initializeTurnstile() {
+    if (!window.turnstile) return;
 
-  // RESTORE EXISTING SESSION
-
-  client.auth.getSession()
-    .then(({ data, error }) => {
-
-      if (error) {
-        showLogin(error.message);
-
-      } else if (data.session && data.session.user) {
-        showDashboard(data.session.user);
-
-      } else {
-        showLogin();
+    const element = document.getElementById("turnstileWidget");
+    if (element && !element.hasAttribute("data-rendered")) {
+      try {
+        captchaWidgetId = window.turnstile.render(element, {
+          sitekey: "0x4AAAAAAFaHjIiHA5lldtZW",
+          callback: window.onTurnstileSuccess,
+          "expired-callback": window.onTurnstileExpired,
+          "error-callback": window.onTurnstileError
+        });
+        element.setAttribute("data-rendered", "true");
+      } catch (error) {
+        console.error("Turnstile initialization failed:", error);
       }
+    }
+  }
 
-    })
-    .catch(() => {
-      showLogin(
-        "Could not restore your session. Please log in."
-      );
+  // TOOL NAVIGATION
+  window.openTool = function(id) {
+    document.getElementById("toolMenu").style.display = "none";
+    document.querySelectorAll(".tool").forEach(tool => {
+      tool.style.display = "none";
     });
-
-
-  // PASSWORD STRENGTH CHECKER
-
-  document.getElementById("checkPasswordButton")
-    .addEventListener("click", () => {
-
-      const value =
-        document.getElementById("testPassword").value;
-
-      const result =
-        document.getElementById("passwordResult");
-
-      if (!value) {
-        result.textContent =
-          "Enter a test password to evaluate.";
-        return;
-      }
-
-      let score = 0;
-
-      if (value.length >= 12) score++;
-      if (/[a-z]/.test(value)) score++;
-      if (/[A-Z]/.test(value)) score++;
-      if (/[0-9]/.test(value)) score++;
-      if (/[^A-Za-z0-9]/.test(value)) score++;
-
-      let rating = "Very weak";
-
-      if (score === 2) rating = "Weak";
-      if (score === 3) rating = "Fair";
-      if (score === 4) rating = "Strong";
-      if (score === 5) rating = "Very strong";
-
-      result.textContent =
-        "Estimated strength: " + rating +
-        ". Use a long, unique password or passphrase. " +
-        "This is a basic estimate, not a security guarantee.";
-    });
-
-
-  // PHISHING AWARENESS PRACTICE
-
-  window.phishingAnswer = function(correct) {
-    const result =
-      document.getElementById("phishingResult");
-
-    result.textContent = correct
-      ? "Correct! Avoid unexpected links and contact the organization through a trusted official channel."
-      : "Not the safest choice. Unexpected urgency and requests for credentials are warning signs. Use an official channel instead.";
+    document.getElementById(id).style.display = "block";
+    document.getElementById("toolMessage").textContent = "";
   };
 
-
-  // URL SAFETY CHECKER
-
-  document.getElementById("checkUrlButton")
-    .addEventListener("click", () => {
-
-      const input =
-        document.getElementById("urlInput").value.trim();
-
-      const result =
-        document.getElementById("urlResult");
-
-      if (!input) {
-        result.textContent = "Enter a website address.";
-        return;
-      }
-
-      let url;
-
-      try {
-        url = new URL(
-          input.includes("://") ? input : "https://" + input
-        );
-
-      } catch {
-        result.textContent =
-          "This does not look like a valid web address.";
-        return;
-      }
-
-      const warnings = [];
-
-      if (url.protocol !== "https:") {
-        warnings.push(
-          "The address does not use HTTPS."
-        );
-      }
-
-      if (url.username || url.password) {
-        warnings.push(
-          "The address contains user information before the host."
-        );
-      }
-
-      if (
-        url.hostname.startsWith("xn--") ||
-        url.hostname.split(".").some(part =>
-          part.startsWith("xn--")
-        )
-      ) {
-        warnings.push(
-          "The domain contains encoded international characters."
-        );
-      }
-
-      if (/^\d{1,3}(\.\d{1,3}){3}$/.test(url.hostname)) {
-        warnings.push(
-          "The address uses an IP address instead of a regular domain."
-        );
-      }
-
-      if (
-        url.hostname.includes("-") ||
-        url.hostname.length > 40
-      ) {
-        warnings.push(
-          "The domain format deserves closer inspection."
-        );
-      }
-
-      if (warnings.length) {
-        result.textContent =
-          "Warning signs found:\n• " +
-          warnings.join("\n• ") +
-          "\n\nThis does not prove the site is malicious. Verify the domain independently.";
-
-      } else {
-        result.textContent =
-          "No basic warning signs were detected by this simple check. " +
-          "That does NOT mean the website is safe. Check the exact domain " +
-          "and use a trusted security service when needed.";
-      }
+  window.backToMenu = function() {
+    document.getElementById("toolMenu").style.display = "grid";
+    document.querySelectorAll(".tool").forEach(tool => {
+      tool.style.display = "none";
     });
+    adminDashboard.style.display = "none";
+    document.getElementById("toolMessage").textContent = "";
+  };
 
+  // PASSWORD STRENGTH CHECKER
+  document.getElementById("checkPasswordButton").addEventListener("click", () => {
+    const password = document.getElementById("testPassword").value;
+    let score = 0;
 
-  // CYBERSECURITY QUIZ QUESTIONS
+    if (password.length >= 12) score++;
+    if (/[a-z]/.test(password) && /[A-Z]/.test(password)) score++;
+    if (/\d/.test(password)) score++;
+    if (/[^A-Za-z0-9]/.test(password)) score++;
 
+    const messages = [
+      "Very weak — choose a longer, more varied password.",
+      "Weak — improve its length and variety.",
+      "Fair — consider making it longer and less predictable.",
+      "Strong — a good start; use unique passwords for each account.",
+      "Very strong by these basic checks. A password manager is recommended."
+    ];
+
+    document.getElementById("passwordResult").textContent =
+      messages[score] || messages[0];
+  });
+
+  // PHISHING AWARENESS
+  window.phishingAnswer = function(correct) {
+    document.getElementById("phishingResult").textContent = correct
+      ? "Correct. Avoid unexpected links and verify through an official channel."
+      : "Not recommended. Do not use unexpected links to provide sensitive information.";
+  };
+
+  // URL CHECKER
+  document.getElementById("checkUrlButton").addEventListener("click", () => {
+    const value = document.getElementById("urlInput").value.trim();
+    const result = document.getElementById("urlResult");
+
+    if (!value) {
+      result.textContent = "Enter a website address to analyze.";
+      return;
+    }
+
+    let url;
+    try {
+      url = new URL(value.includes("://") ? value : "https://" + value);
+    } catch {
+      result.textContent = "This does not look like a valid URL.";
+      return;
+    }
+
+    const warnings = [];
+
+    if (url.protocol !== "https:") warnings.push("It does not use HTTPS.");
+    if (url.username || url.password) warnings.push("It contains embedded login information.");
+    if (url.hostname.includes("xn--")) warnings.push("It contains an internationalized domain name; check it carefully.");
+    if (/^\d{1,3}(\.\d{1,3}){3}$/.test(url.hostname)) warnings.push("It uses an IP address instead of a typical domain name.");
+    if (url.hostname.split(".").length > 4) warnings.push("It has an unusually long subdomain structure.");
+
+    result.textContent = warnings.length
+      ? "Warning signs:\n• " + warnings.join("\n• ") +
+        "\n\nThis is a basic check, not a security verdict."
+      : "No obvious warning signs were detected by these basic checks. This does not guarantee the site is safe.";
+  });
+
+  // QUIZ QUESTIONS
   const questions = [
-
     {
       q: "What should you do with an unexpected password-reset link?",
       options: [
@@ -1114,10 +748,8 @@ footer {
         "Share it with friends"
       ],
       answer: 1,
-      explanation:
-        "Use a trusted official channel instead of an unexpected link."
+      explanation: "Use a trusted official channel instead of an unexpected link."
     },
-
     {
       q: "Which is the safest password habit?",
       options: [
@@ -1126,10 +758,8 @@ footer {
         "Use unique passwords and a password manager"
       ],
       answer: 2,
-      explanation:
-        "Unique passwords limit damage if one account is compromised."
+      explanation: "Unique passwords limit damage if one account is compromised."
     },
-
     {
       q: "What should you do with an unexpected email attachment?",
       options: [
@@ -1138,10 +768,8 @@ footer {
         "Disable security software"
       ],
       answer: 1,
-      explanation:
-        "Verify unexpected attachments before opening them."
+      explanation: "Verify unexpected attachments before opening them."
     },
-
     {
       q: "What does multi-factor authentication do?",
       options: [
@@ -1150,10 +778,8 @@ footer {
         "Makes phishing impossible"
       ],
       answer: 0,
-      explanation:
-        "MFA adds a layer of protection but cannot prevent every attack."
+      explanation: "MFA adds a layer of protection but cannot prevent every attack."
     },
-
     {
       q: "A website has HTTPS. Does that guarantee it is trustworthy?",
       options: [
@@ -1162,22 +788,15 @@ footer {
         "Only on mobile phones"
       ],
       answer: 1,
-      explanation:
-        "HTTPS encrypts the connection; it does not guarantee honest content."
+      explanation: "HTTPS encrypts the connection; it does not guarantee honest content."
     }
-
   ];
-
-
-  // QUIZ STATE
 
   let questionIndex = 0;
   let quizScore = 0;
   let answered = false;
   let quizComplete = false;
-
-
-  // DISPLAY QUIZ QUESTION
+  let quizSaving = false;
 
   function renderQuestion() {
     answered = false;
@@ -1186,54 +805,38 @@ footer {
     const question = questions[questionIndex];
 
     document.getElementById("quizProgress").textContent =
-      "Question " + (questionIndex + 1) +
-      " of " + questions.length;
-
-    document.getElementById("quizQuestion").textContent =
-      question.q;
-
+      "Question " + (questionIndex + 1) + " of " + questions.length;
+    document.getElementById("quizQuestion").textContent = question.q;
     document.getElementById("quizResult").textContent = "";
 
-    const nextButton =
-      document.getElementById("nextQuestionButton");
-
+    const nextButton = document.getElementById("nextQuestionButton");
     nextButton.hidden = true;
     nextButton.textContent = "Next Question";
-    nextButton.onclick = null;
+    nextButton.disabled = false;
 
-    const options =
-      document.getElementById("quizOptions");
-
+    const options = document.getElementById("quizOptions");
     options.replaceChildren();
 
     question.options.forEach((option, index) => {
-
       const button = document.createElement("button");
-
       button.className = "option";
       button.textContent = option;
 
       button.addEventListener("click", () => {
-
         if (answered || quizComplete) return;
 
         answered = true;
-
         const correct = index === question.answer;
-
         if (correct) quizScore++;
 
         document.getElementById("quizResult").textContent =
-          (correct ? "Correct! " : "Not quite. ") +
-          question.explanation;
+          (correct ? "Correct! " : "Not quite. ") + question.explanation;
 
-        Array.from(options.querySelectorAll("button"))
-          .forEach(item => {
-            item.disabled = true;
-          });
+        options.querySelectorAll("button").forEach(item => {
+          item.disabled = true;
+        });
 
         nextButton.hidden = false;
-
         nextButton.textContent =
           questionIndex === questions.length - 1
             ? "Show Final Score"
@@ -1244,59 +847,180 @@ footer {
     });
   }
 
+  // SAVE QUIZ RESULT
+  async function saveQuizResult() {
+    if (!client || !currentUser) {
+      return { error: new Error("Please sign in before saving your result.") };
+    }
+
+    return await client
+      .from("quiz_results")
+      .insert({
+        user_id: currentUser.id,
+        score: quizScore,
+        total_questions: questions.length
+      });
+  }
+
+  // ADMIN LOAD QUIZ RESULTS
+  async function loadQuizResults() {
+    const body = document.getElementById("quizResultsBody");
+    body.replaceChildren();
+
+    if (!currentUser || !currentUserIsAdmin) {
+      adminMessage.textContent = "Admin access required.";
+      return;
+    }
+
+    adminMessage.textContent = "Loading quiz results...";
+
+    const { data, error } = await client
+      .from("quiz_results")
+      .select("user_id, score, total_questions, completed_at")
+      .order("completed_at", { ascending: false })
+      .limit(100);
+
+    if (error) {
+      console.error("Quiz results load failed:", error.message);
+      adminMessage.textContent =
+        "Could not load results. Check the quiz_results SELECT policy.";
+      return;
+    }
+
+    if (!data || data.length === 0) {
+      adminMessage.textContent = "No quiz results have been saved yet.";
+      const row = document.createElement("tr");
+      const cell = document.createElement("td");
+      cell.colSpan = 3;
+      cell.textContent = "No results yet.";
+      row.appendChild(cell);
+      body.appendChild(row);
+      return;
+    }
+
+    adminMessage.textContent = "Showing the latest " + data.length + " results.";
+
+    data.forEach(item => {
+      const row = document.createElement("tr");
+
+      const date = document.createElement("td");
+      date.textContent = item.completed_at
+        ? new Date(item.completed_at).toLocaleString()
+        : "Unknown";
+
+      const user = document.createElement("td");
+      user.textContent = item.user_id || "Unknown";
+
+      const score = document.createElement("td");
+      score.textContent = item.score + " / " + item.total_questions;
+
+      row.append(date, user, score);
+      body.appendChild(row);
+    });
+  }
+
+  document.getElementById("refreshResultsButton")
+    .addEventListener("click", loadQuizResults);
+
+  // ADMIN BUTTONS
+  document.getElementById("openAdmin").addEventListener("click", async () => {
+    if (!currentUserIsAdmin) {
+      adminMessage.textContent = "Admin access required.";
+      return;
+    }
+
+    document.getElementById("toolMenu").style.display = "none";
+    document.querySelectorAll(".tool").forEach(tool => {
+      tool.style.display = "none";
+    });
+
+    adminDashboard.style.display = "block";
+    await loadQuizResults();
+  });
+
+  document.getElementById("closeAdmin").addEventListener("click", backToMenu);
 
   // NEXT QUESTION AND FINAL SCORE
-
   document.getElementById("nextQuestionButton")
-    .addEventListener("click", () => {
-
+    .addEventListener("click", async () => {
       if (quizComplete) {
         questionIndex = 0;
         quizScore = 0;
         answered = false;
         quizComplete = false;
+        quizSaving = false;
         renderQuestion();
         return;
       }
 
-      if (!answered) return;
+      if (!answered || quizSaving) return;
 
       if (questionIndex < questions.length - 1) {
         questionIndex++;
         renderQuestion();
+        return;
+      }
 
+      quizComplete = true;
+      quizSaving = true;
+
+      document.getElementById("quizProgress").textContent = "Quiz complete";
+      document.getElementById("quizQuestion").textContent =
+        "Your score: " + quizScore + " / " + questions.length;
+      document.getElementById("quizOptions").replaceChildren();
+
+      const resultMessage = document.getElementById("quizResult");
+      const nextButton = document.getElementById("nextQuestionButton");
+
+      nextButton.textContent = "Saving result...";
+      nextButton.disabled = true;
+      resultMessage.textContent = "Saving your result to Supabase...";
+
+      const { error } = await saveQuizResult();
+
+      quizSaving = false;
+      nextButton.disabled = false;
+      nextButton.textContent = "Try Again";
+
+      if (error) {
+        console.error("Quiz result save failed:", error.message);
+        resultMessage.textContent =
+          "Score: " + quizScore + " / " + questions.length +
+          ". Save failed. Check your login and Supabase RLS policies.";
       } else {
-        quizComplete = true;
-
-        document.getElementById("quizProgress").textContent =
-          "Quiz complete";
-
-        document.getElementById("quizQuestion").textContent =
-          "Your score: " + quizScore +
-          " / " + questions.length;
-
-        document.getElementById("quizOptions").replaceChildren();
-
-        document.getElementById("quizResult").textContent =
-          quizScore === questions.length
-            ? "Excellent work! You answered every question correctly."
-            : "Keep learning and try again to improve your score.";
-
-        const nextButton =
-          document.getElementById("nextQuestionButton");
-
-        nextButton.textContent = "Try Again";
-        nextButton.hidden = false;
+        resultMessage.textContent =
+          "Score: " + quizScore + " / " + questions.length +
+          ". Your result has been saved.";
       }
     });
 
-
-  // INITIALIZE QUIZ
-
+  // STARTUP
   renderQuestion();
+
+  // Initialize Turnstile after the API becomes available.
+  function waitForTurnstile(attempts = 0) {
+    if (window.turnstile) {
+      initializeTurnstile();
+    } else if (attempts < 30) {
+      setTimeout(() => waitForTurnstile(attempts + 1), 300);
+    }
+  }
+
+  waitForTurnstile();
+
+  // RESTORE EXISTING SESSION
+  client.auth.getSession().then(({ data, error }) => {
+    if (error) {
+      console.error("Session restore failed:", error.message);
+      return;
+    }
+
+    if (data.session?.user) {
+      showDashboard(data.session.user);
+    }
+  });
 
 })();
 </script>
-
 </body>
 </html>
