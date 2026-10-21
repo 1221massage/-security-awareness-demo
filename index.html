@@ -4,10 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CyberShield | Security Awareness</title>
-
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
-
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
   <style>
     :root {
       --bg: #071426;
@@ -17,25 +15,22 @@
       --text: #f4f8ff;
       --muted: #b8c9dc;
       --border: #284766;
+      --danger: #ff8585;
+      --success: #80edb0;
     }
-
     * { box-sizing: border-box; }
-
     body {
       margin: 0;
       font-family: Arial, sans-serif;
       background: var(--bg);
       color: var(--text);
     }
-
     button, input { font: inherit; }
     button { cursor: pointer; }
-
     button:disabled {
       opacity: .55;
       cursor: wait;
     }
-
     header {
       background: #0c1d31;
       padding: 16px 20px;
@@ -46,25 +41,21 @@
       gap: 12px;
       flex-wrap: wrap;
     }
-
     .brand {
       color: var(--accent);
       font-size: 23px;
       font-weight: bold;
     }
-
     .header-user {
       color: var(--muted);
       font-size: 13px;
       overflow-wrap: anywhere;
     }
-
     .container {
       width: min(1100px, 100%);
       margin: auto;
       padding: 22px;
     }
-
     .card {
       background: var(--panel);
       border: 1px solid var(--border);
@@ -72,25 +63,20 @@
       padding: 22px;
       margin-bottom: 18px;
     }
-
     .auth-card {
       max-width: 440px;
       margin: 55px auto;
     }
-
     h1, h2, h3 { margin-top: 0; }
     h1 { color: var(--accent); }
-
     .subtitle, .muted {
       color: var(--muted);
       line-height: 1.6;
     }
-
     label {
       display: block;
       margin: 14px 0 7px;
     }
-
     input {
       width: 100%;
       padding: 12px;
@@ -99,7 +85,6 @@
       background: #08182a;
       color: white;
     }
-
     button {
       border: 0;
       padding: 12px 15px;
@@ -108,57 +93,46 @@
       color: #062034;
       font-weight: bold;
     }
-
     .secondary {
       background: transparent;
       border: 1px solid var(--accent);
       color: var(--accent);
     }
-
     .full {
       width: 100%;
       margin-top: 14px;
     }
-
     #authMessage, #toolMessage, #adminMessage {
       color: #ffd580;
       overflow-wrap: anywhere;
       line-height: 1.6;
       margin-top: 14px;
     }
-
     #app { display: none; }
-
     .hero {
       padding: 26px;
       border-radius: 14px;
       background: linear-gradient(135deg, #122f49, #123c4a);
       margin-bottom: 20px;
     }
-
     .hero h1 { margin-bottom: 8px; }
-
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr));
       gap: 16px;
     }
-
     .tool-card {
       background: var(--panel);
       border: 1px solid var(--border);
       border-radius: 12px;
       padding: 20px;
     }
-
     .tool-card p {
       color: var(--muted);
       line-height: 1.5;
     }
-
     .tool-card button { margin-top: 8px; }
     .tool { display: none; }
-
     .result {
       padding: 12px;
       margin-top: 14px;
@@ -168,7 +142,6 @@
       overflow-wrap: anywhere;
       white-space: pre-line;
     }
-
     .option {
       display: block;
       width: 100%;
@@ -178,100 +151,123 @@
       color: white;
       border: 1px solid var(--border);
     }
-
     .option:hover { border-color: var(--accent); }
     .admin-heading { color: var(--accent); }
-
     .turnstile-container {
       margin-top: 18px;
       display: flex;
       justify-content: center;
       min-height: 65px;
     }
-
-    .table-wrap { overflow-x: auto; }
-
+    .table-wrap {
+      overflow-x: auto;
+      margin-top: 14px;
+    }
     table {
       width: 100%;
       border-collapse: collapse;
       text-align: left;
     }
-
     th, td {
       padding: 10px;
       border-bottom: 1px solid var(--border);
       vertical-align: top;
     }
-
     td { overflow-wrap: anywhere; }
-
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 14px;
+      margin: 18px 0;
+    }
+    .stat-card {
+      padding: 18px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--panel2);
+      min-width: 0;
+    }
+    .stat-label {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    .stat-value {
+      color: var(--accent);
+      font-size: 27px;
+      font-weight: bold;
+      margin-top: 8px;
+      overflow-wrap: anywhere;
+    }
+    .section-title {
+      margin-top: 28px;
+      color: var(--accent);
+    }
+    .status-error { color: var(--danger) !important; }
+    .status-success { color: var(--success) !important; }
     footer {
       padding: 25px;
       text-align: center;
       color: var(--muted);
       font-size: 13px;
     }
-
     @media (max-width: 480px) {
       .container { padding: 14px; }
       .card { padding: 17px; }
       header { padding: 14px; }
+      .stat-value { font-size: 23px; }
     }
   </style>
 </head>
-
 <body>
 <header>
   <div class="brand">🛡️ CyberShield</div>
   <div id="headerUser" class="header-user"></div>
   <button id="logoutButton" class="secondary" hidden>Logout</button>
 </header>
-
 <main class="container">
-
   <!-- LOGIN AND REGISTRATION -->
   <section id="authSection" class="card auth-card">
     <h1>Welcome to CyberShield</h1>
     <p class="subtitle">Cybersecurity Awareness Portal</p>
-
     <form id="authForm">
       <label for="email">Email address</label>
-      <input id="email" type="email" autocomplete="email"
-             placeholder="you@example.com" required>
-
+      <input
+        id="email"
+        type="email"
+        autocomplete="email"
+        placeholder="you@example.com"
+        required
+      >
       <label for="password">Password</label>
-      <input id="password" type="password" autocomplete="current-password"
-             placeholder="Enter password" minlength="6" required>
-
+      <input
+        id="password"
+        type="password"
+        autocomplete="current-password"
+        placeholder="Enter password"
+        minlength="6"
+        required
+      >
       <div class="turnstile-container">
-        <div id="turnstileWidget"
-             class="cf-turnstile"
-             data-sitekey="0x4AAAAAAFaHjIiHA5lldtZW"
-             data-callback="onTurnstileSuccess"
-             data-expired-callback="onTurnstileExpired"
-             data-error-callback="onTurnstileError"></div>
+        <div id="turnstileWidget"></div>
       </div>
-
       <button id="loginButton" class="full" type="submit">Login</button>
       <button id="registerButton" class="full secondary" type="button">
         Create Account
       </button>
     </form>
-
     <div id="authMessage" role="status" aria-live="polite"></div>
     <p class="muted">
       Use your own email address. Email confirmation may be required.
     </p>
   </section>
-
-  <!-- DASHBOARD -->
+  <!-- USER DASHBOARD -->
   <section id="app">
     <div class="hero">
       <h1>Cybersecurity Dashboard</h1>
       <p>Learn to recognize threats and protect your digital life.</p>
       <p id="welcomeEmail" class="muted"></p>
     </div>
-
     <!-- ADMIN ACCESS -->
     <section id="adminAccess" class="card" style="display:none;">
       <h2 class="admin-heading">🔐 Admin Dashboard</h2>
@@ -279,18 +275,34 @@
       <p class="muted">Access the CyberShield administration area.</p>
       <button id="openAdmin">Open Admin Dashboard</button>
     </section>
-
     <!-- ADMIN PANEL -->
     <section id="adminDashboard" class="card" style="display:none;">
       <h2 class="admin-heading">🛡️ CyberShield Admin Panel</h2>
       <p>Admin access only.</p>
       <p class="muted">Cybersecurity Awareness Management</p>
-
       <div id="adminMessage" role="status" aria-live="polite"></div>
-
-      <button id="refreshResultsButton">Refresh Quiz Results</button>
-
-      <div class="table-wrap" style="margin-top:16px;">
+      <button id="refreshAdminButton">Refresh Analytics &amp; Results</button>
+      <h3 class="section-title">📊 Analytics</h3>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">Total Users</div>
+          <div id="totalUsers" class="stat-value">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Total Quizzes</div>
+          <div id="totalQuizzes" class="stat-value">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Average Score</div>
+          <div id="averageScore" class="stat-value">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Active Users — Last 7 Days</div>
+          <div id="activeUsers" class="stat-value">—</div>
+        </div>
+      </div>
+      <h3 class="section-title">🕒 Recent Quiz Activity</h3>
+      <div class="table-wrap">
         <table>
           <thead>
             <tr>
@@ -300,16 +312,68 @@
             </tr>
           </thead>
           <tbody id="quizResultsBody">
-            <tr>
-              <td colspan="3">Quiz results will appear here.</td>
-            </tr>
+            <tr><td colspan="3">Quiz results will appear here.</td></tr>
           </tbody>
         </table>
       </div>
-
       <button id="closeAdmin" class="secondary full">Back to Tools</button>
     </section>
-
+    <!-- USER PROGRESS -->
+    <section id="progressPanel" class="card">
+      <h2>📈 My Quiz Progress</h2>
+      <p class="muted">Your own recent quiz attempts and scores.</p>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">Quizzes Completed</div>
+          <div id="myQuizCount" class="stat-value">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">My Average Score</div>
+          <div id="myAverageScore" class="stat-value">—</div>
+        </div>
+      </div>
+      <button id="refreshProgressButton">Refresh My Progress</button>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Score</th>
+              <th>Percentage</th>
+            </tr>
+          </thead>
+          <tbody id="myHistoryBody">
+            <tr><td colspan="3">Your quiz history will appear here.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div id="progressMessage" class="result" role="status" aria-live="polite"></div>
+    </section>
+    <!-- LEADERBOARD -->
+    <section id="leaderboardPanel" class="card">
+      <h2>🏆 CyberShield Leaderboard</h2>
+      <p class="muted">
+        Players are shown using pseudonymous labels, not email addresses.
+      </p>
+      <button id="refreshLeaderboardButton">Refresh Leaderboard</button>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Rank</th>
+              <th>Player</th>
+              <th>Quizzes</th>
+              <th>Best Score</th>
+              <th>Average Score</th>
+            </tr>
+          </thead>
+          <tbody id="leaderboardBody">
+            <tr><td colspan="5">Leaderboard will appear here.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div id="leaderboardMessage" class="result" role="status" aria-live="polite"></div>
+    </section>
     <!-- TOOL MENU -->
     <div class="grid" id="toolMenu">
       <article class="tool-card">
@@ -317,28 +381,23 @@
         <p>Check password strength locally in your browser.</p>
         <button onclick="openTool('passwordTool')">Open Tool</button>
       </article>
-
       <article class="tool-card">
         <h3>🎣 Phishing Awareness</h3>
         <p>Practice spotting suspicious messages.</p>
         <button onclick="openTool('phishingTool')">Start Practice</button>
       </article>
-
       <article class="tool-card">
         <h3>🌐 URL Safety Check</h3>
         <p>Look for common warning signs in a web address.</p>
         <button onclick="openTool('urlTool')">Check URL</button>
       </article>
-
       <article class="tool-card">
         <h3>📝 Cybersecurity Quiz</h3>
         <p>Test your knowledge and receive a score.</p>
         <button onclick="openTool('quizTool')">Start Quiz</button>
       </article>
     </div>
-
     <p id="toolMessage" role="status" aria-live="polite"></p>
-
     <!-- PASSWORD TOOL -->
     <section id="passwordTool" class="card tool">
       <h2>🔑 Password Strength Checker</h2>
@@ -346,15 +405,12 @@
         This tool checks your test password locally in your browser.
         Never enter a real password on a website you do not trust.
       </p>
-
       <label for="testPassword">Password to evaluate</label>
       <input id="testPassword" type="password" placeholder="Enter a test password">
       <button id="checkPasswordButton" class="full">Check Strength</button>
       <div id="passwordResult" class="result" aria-live="polite"></div>
-
       <button class="secondary full" onclick="backToMenu()">Back to Dashboard</button>
     </section>
-
     <!-- PHISHING TOOL -->
     <section id="phishingTool" class="card tool">
       <h2>🎣 Phishing Awareness Practice</h2>
@@ -363,7 +419,6 @@
         account will be closed unless you verify your details immediately.
       </p>
       <p><strong>What should you do?</strong></p>
-
       <button class="option" onclick="phishingAnswer(false)">
         A. Click the link and enter my password.
       </button>
@@ -374,11 +429,9 @@
       <button class="option" onclick="phishingAnswer(false)">
         C. Forward the message to friends before checking it.
       </button>
-
       <div id="phishingResult" class="result" aria-live="polite"></div>
       <button class="secondary full" onclick="backToMenu()">Back to Dashboard</button>
     </section>
-
     <!-- URL TOOL -->
     <section id="urlTool" class="card tool">
       <h2>🌐 URL Safety Checker</h2>
@@ -386,15 +439,12 @@
         This tool checks for common warning signs only. It cannot confirm
         whether a website is safe or malicious.
       </p>
-
       <label for="urlInput">Website address</label>
       <input id="urlInput" type="text" placeholder="https://example.com">
       <button id="checkUrlButton" class="full">Analyze URL</button>
       <div id="urlResult" class="result" aria-live="polite"></div>
-
       <button class="secondary full" onclick="backToMenu()">Back to Dashboard</button>
     </section>
-
     <!-- QUIZ -->
     <section id="quizTool" class="card tool">
       <h2>📝 Cybersecurity Quiz</h2>
@@ -407,33 +457,29 @@
     </section>
   </section>
 </main>
-
 <footer>CyberShield — Cybersecurity Awareness &amp; Education</footer>
-
 <script>
 (() => {
   "use strict";
-
   // SUPABASE CONFIGURATION
   const SUPABASE_URL = "https://cpwjposjhgpnygiocjht.supabase.co";
   const SUPABASE_KEY = "sb_publishable_Q7TrQWEMPrGRtsQqVm1Icw_e8Bapcql";
-
-  // ADMIN USER UUID
+  // Keep the admin UUID aligned with the existing admin_users allow-list.
   const ADMIN_USER_ID = "5705c720-93de-4e95-a49a-7915aae782e3";
-
-  const authSection = document.getElementById("authSection");
-  const app = document.getElementById("app");
-  const authForm = document.getElementById("authForm");
-  const authMessage = document.getElementById("authMessage");
-  const loginButton = document.getElementById("loginButton");
-  const registerButton = document.getElementById("registerButton");
-  const logoutButton = document.getElementById("logoutButton");
-  const emailInput = document.getElementById("email");
-  const passwordInput = document.getElementById("password");
-  const adminAccess = document.getElementById("adminAccess");
-  const adminDashboard = document.getElementById("adminDashboard");
-  const adminMessage = document.getElementById("adminMessage");
-
+  const TURNSTILE_SITE_KEY = "0x4AAAAAAFaHjIiHA5lldtZW";
+  const $ = id => document.getElementById(id);
+  const authSection = $("authSection");
+  const app = $("app");
+  const authForm = $("authForm");
+  const authMessage = $("authMessage");
+  const loginButton = $("loginButton");
+  const registerButton = $("registerButton");
+  const logoutButton = $("logoutButton");
+  const emailInput = $("email");
+  const passwordInput = $("password");
+  const adminAccess = $("adminAccess");
+  const adminDashboard = $("adminDashboard");
+  const adminMessage = $("adminMessage");
   let client = null;
   let busy = false;
   let currentUser = null;
@@ -441,45 +487,74 @@
   let captchaToken = null;
   let captchaError = false;
   let captchaWidgetId = null;
-
+  let activeSessionUserId = null;
+  let questionIndex = 0;
+  let quizScore = 0;
+  let answered = false;
+  let quizComplete = false;
+  let quizSaving = false;
+  function setMessage(id, message, type = "") {
+    const element = $(id);
+    element.textContent = message;
+    element.classList.remove("status-error", "status-success");
+    if (type === "error") element.classList.add("status-error");
+    if (type === "success") element.classList.add("status-success");
+  }
+  function setAuthMessage(message, type = "") {
+    setMessage("authMessage", message, type);
+  }
+  function formatDate(value) {
+    if (!value) return "Unknown";
+    const date = new Date(value);
+    return Number.isNaN(date.getTime()) ? "Unknown" : date.toLocaleString();
+  }
+  function normalizeRows(data) {
+    if (Array.isArray(data)) return data;
+    if (data && typeof data === "object") return [data];
+    return [];
+  }
+  function firstDefined(object, keys, fallback = null) {
+    for (const key of keys) {
+      if (object && object[key] !== undefined && object[key] !== null) {
+        return object[key];
+      }
+    }
+    return fallback;
+  }
+  function setBusy(value) {
+    busy = value;
+    loginButton.disabled = value;
+    registerButton.disabled = value;
+    loginButton.textContent = value ? "Please wait..." : "Login";
+  }
+  // TURNSTILE CALLBACKS
   window.onTurnstileSuccess = token => {
     captchaToken = token;
     captchaError = false;
     setAuthMessage("");
   };
-
   window.onTurnstileExpired = () => {
     captchaToken = null;
     setAuthMessage("CAPTCHA expired. Please complete it again.");
   };
-
   window.onTurnstileError = () => {
     captchaToken = null;
     captchaError = true;
-    setAuthMessage("CAPTCHA could not load. Refresh and try again.");
+    setAuthMessage("CAPTCHA could not load. Refresh and try again.", "error");
   };
-
-  function setAuthMessage(message) {
-    authMessage.textContent = message;
-  }
-
   function getCaptchaToken() {
     if (captchaError) {
-      setAuthMessage("CAPTCHA is unavailable. Refresh and try again.");
+      setAuthMessage("CAPTCHA is unavailable. Refresh and try again.", "error");
       return null;
     }
-
     if (!captchaToken) {
       setAuthMessage("Please complete the CAPTCHA first.");
       return null;
     }
-
     return captchaToken;
   }
-
   function resetTurnstile() {
     captchaToken = null;
-
     if (window.turnstile && captchaWidgetId !== null) {
       try {
         window.turnstile.reset(captchaWidgetId);
@@ -488,234 +563,214 @@
       }
     }
   }
-
-  function setBusy(value) {
-    busy = value;
-    loginButton.disabled = value;
-    registerButton.disabled = value;
-    loginButton.textContent = value ? "Please wait..." : "Login";
+  function initializeTurnstile() {
+    if (!window.turnstile || captchaWidgetId !== null) return;
+    try {
+      captchaWidgetId = window.turnstile.render("turnstileWidget", {
+        sitekey: TURNSTILE_SITE_KEY,
+        callback: window.onTurnstileSuccess,
+        "expired-callback": window.onTurnstileExpired,
+        "error-callback": window.onTurnstileError
+      });
+    } catch (error) {
+      console.error("Turnstile initialization failed:", error);
+      captchaError = true;
+      setAuthMessage("CAPTCHA initialization failed. Refresh the page.", "error");
+    }
   }
-
+  function waitForTurnstile(attempts = 0) {
+    if (window.turnstile) {
+      initializeTurnstile();
+    } else if (attempts < 40) {
+      setTimeout(() => waitForTurnstile(attempts + 1), 300);
+    } else {
+      captchaError = true;
+      setAuthMessage("CAPTCHA could not load. Check your connection and refresh.", "error");
+    }
+  }
   // INITIALIZE SUPABASE
   if (!window.supabase) {
-    setAuthMessage("Supabase library could not load. Check your connection.");
+    setAuthMessage("Supabase library could not load. Check your connection.", "error");
     return;
   }
-
   client = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
   // ADMIN CHECK
+  // The frontend check controls visibility only. Admin RPC functions must
+  // independently enforce authorization on the server.
   async function checkAdmin(user) {
     currentUserIsAdmin = false;
     adminAccess.style.display = "none";
     adminDashboard.style.display = "none";
-
     if (!user) return false;
-
-    // Verify against the existing admin_users table.
     const { data, error } = await client
       .from("admin_users")
       .select("user_id")
       .eq("user_id", user.id)
       .maybeSingle();
-
     if (error) {
       console.error("Admin check failed:", error.message);
       adminMessage.textContent = "Could not verify admin status.";
       return false;
     }
-
-    // Require both the existing allow-list row and the configured admin UUID.
-    currentUserIsAdmin =
-      Boolean(data) && user.id === ADMIN_USER_ID;
-
+    currentUserIsAdmin = Boolean(data) && user.id === ADMIN_USER_ID;
     adminAccess.style.display = currentUserIsAdmin ? "block" : "none";
     return currentUserIsAdmin;
   }
-
   // SHOW DASHBOARD
   async function showDashboard(user) {
+    if (!user) return;
     currentUser = user;
+    activeSessionUserId = user.id;
     authSection.style.display = "none";
     app.style.display = "block";
     logoutButton.hidden = false;
-    document.getElementById("headerUser").textContent = user.email || "";
-    document.getElementById("welcomeEmail").textContent =
-      "Signed in as " + (user.email || "user");
-
+    $("headerUser").textContent = user.email || "";
+    $("welcomeEmail").textContent = "Signed in as " + (user.email || "user");
     await checkAdmin(user);
+    // Refresh user-facing data when a session is restored or changed.
+    await Promise.allSettled([
+      loadMyProgress(),
+      loadLeaderboard()
+    ]);
   }
-
   // LOGIN
   authForm.addEventListener("submit", async event => {
     event.preventDefault();
     if (busy) return;
-
     const token = getCaptchaToken();
     if (!token) return;
-
     setBusy(true);
     setAuthMessage("Logging in...");
-
     try {
       const { data, error } = await client.auth.signInWithPassword({
         email: emailInput.value.trim(),
         password: passwordInput.value,
         options: { captchaToken: token }
       });
-
       if (error) {
-        setAuthMessage(error.message);
+        setAuthMessage(error.message, "error");
       } else if (data.user) {
         await showDashboard(data.user);
         setAuthMessage("");
       } else {
-        setAuthMessage("Login could not be completed.");
+        setAuthMessage("Login could not be completed.", "error");
       }
     } catch (error) {
       console.error("Login error:", error);
-      setAuthMessage("Network error. Please check your connection.");
+      setAuthMessage("Network error. Please check your connection.", "error");
     } finally {
       resetTurnstile();
       setBusy(false);
     }
   });
-
   // REGISTRATION
   registerButton.addEventListener("click", async () => {
     if (busy) return;
-
     const token = getCaptchaToken();
     if (!token) return;
-
     setBusy(true);
     setAuthMessage("Creating account...");
-
     try {
       const { data, error } = await client.auth.signUp({
         email: emailInput.value.trim(),
         password: passwordInput.value,
-        options: {
-          captchaToken: token
-        }
+        options: { captchaToken: token }
       });
-
       if (error) {
-        setAuthMessage(error.message);
+        setAuthMessage(error.message, "error");
       } else if (data.session && data.user) {
         await showDashboard(data.user);
-        setAuthMessage("Account created successfully.");
+        setAuthMessage("Account created successfully.", "success");
       } else {
         setAuthMessage("Account created. Check your email to confirm registration.");
       }
     } catch (error) {
       console.error("Registration error:", error);
-      setAuthMessage("Could not create account. Check your connection.");
+      setAuthMessage("Could not create account. Check your connection.", "error");
     } finally {
       resetTurnstile();
       setBusy(false);
     }
   });
-
   // LOGOUT
   logoutButton.addEventListener("click", async () => {
     await client.auth.signOut();
     currentUser = null;
     currentUserIsAdmin = false;
+    activeSessionUserId = null;
     app.style.display = "none";
     authSection.style.display = "block";
     logoutButton.hidden = true;
-    document.getElementById("headerUser").textContent = "";
+    $("headerUser").textContent = "";
     adminDashboard.style.display = "none";
     adminAccess.style.display = "none";
     backToMenu();
   });
-
-  // RESTORE SESSION
-  client.auth.onAuthStateChange((_event, session) => {
-    if (session?.user) {
-      showDashboard(session.user);
+  // SESSION EVENTS
+  client.auth.onAuthStateChange((event, session) => {
+    // Avoid repeatedly rebuilding the dashboard for token refresh events.
+    if (session?.user && activeSessionUserId !== session.user.id) {
+      setTimeout(() => showDashboard(session.user), 0);
+    }
+    if (!session?.user && activeSessionUserId) {
+      activeSessionUserId = null;
+      currentUser = null;
+      currentUserIsAdmin = false;
+      app.style.display = "none";
+      authSection.style.display = "block";
+      logoutButton.hidden = true;
+      adminAccess.style.display = "none";
+      adminDashboard.style.display = "none";
     }
   });
-
-  // CAPTCHA WIDGET ID
-  function initializeTurnstile() {
-    if (!window.turnstile) return;
-
-    const element = document.getElementById("turnstileWidget");
-    if (element && !element.hasAttribute("data-rendered")) {
-      try {
-        captchaWidgetId = window.turnstile.render(element, {
-          sitekey: "0x4AAAAAAFaHjIiHA5lldtZW",
-          callback: window.onTurnstileSuccess,
-          "expired-callback": window.onTurnstileExpired,
-          "error-callback": window.onTurnstileError
-        });
-        element.setAttribute("data-rendered", "true");
-      } catch (error) {
-        console.error("Turnstile initialization failed:", error);
-      }
-    }
-  }
-
   // TOOL NAVIGATION
   window.openTool = function(id) {
-    document.getElementById("toolMenu").style.display = "none";
+    $("toolMenu").style.display = "none";
     document.querySelectorAll(".tool").forEach(tool => {
       tool.style.display = "none";
     });
-    document.getElementById(id).style.display = "block";
-    document.getElementById("toolMessage").textContent = "";
+    $(id).style.display = "block";
+    $("toolMessage").textContent = "";
   };
-
   window.backToMenu = function() {
-    document.getElementById("toolMenu").style.display = "grid";
+    $("toolMenu").style.display = "grid";
     document.querySelectorAll(".tool").forEach(tool => {
       tool.style.display = "none";
     });
     adminDashboard.style.display = "none";
-    document.getElementById("toolMessage").textContent = "";
+    $("toolMessage").textContent = "";
   };
-
   // PASSWORD STRENGTH CHECKER
-  document.getElementById("checkPasswordButton").addEventListener("click", () => {
-    const password = document.getElementById("testPassword").value;
+  $("checkPasswordButton").addEventListener("click", () => {
+    const password = $("testPassword").value;
     let score = 0;
-
     if (password.length >= 12) score++;
     if (/[a-z]/.test(password) && /[A-Z]/.test(password)) score++;
     if (/\d/.test(password)) score++;
     if (/[^A-Za-z0-9]/.test(password)) score++;
-
     const messages = [
       "Very weak — choose a longer, more varied password.",
       "Weak — improve its length and variety.",
       "Fair — consider making it longer and less predictable.",
-      "Strong — a good start; use unique passwords for each account.",
+      "Strong — use unique passwords for each account.",
       "Very strong by these basic checks. A password manager is recommended."
     ];
-
-    document.getElementById("passwordResult").textContent =
-      messages[score] || messages[0];
+    $("passwordResult").textContent = messages[score];
   });
-
   // PHISHING AWARENESS
   window.phishingAnswer = function(correct) {
-    document.getElementById("phishingResult").textContent = correct
+    $("phishingResult").textContent = correct
       ? "Correct. Avoid unexpected links and verify through an official channel."
       : "Not recommended. Do not use unexpected links to provide sensitive information.";
   };
-
   // URL CHECKER
-  document.getElementById("checkUrlButton").addEventListener("click", () => {
-    const value = document.getElementById("urlInput").value.trim();
-    const result = document.getElementById("urlResult");
-
+  $("checkUrlButton").addEventListener("click", () => {
+    const value = $("urlInput").value.trim();
+    const result = $("urlResult");
     if (!value) {
       result.textContent = "Enter a website address to analyze.";
       return;
     }
-
     let url;
     try {
       url = new URL(value.includes("://") ? value : "https://" + value);
@@ -723,21 +778,21 @@
       result.textContent = "This does not look like a valid URL.";
       return;
     }
-
+    if (!["http:", "https:"].includes(url.protocol)) {
+      result.textContent = "Unsupported URL protocol.";
+      return;
+    }
     const warnings = [];
-
     if (url.protocol !== "https:") warnings.push("It does not use HTTPS.");
     if (url.username || url.password) warnings.push("It contains embedded login information.");
     if (url.hostname.includes("xn--")) warnings.push("It contains an internationalized domain name; check it carefully.");
     if (/^\d{1,3}(\.\d{1,3}){3}$/.test(url.hostname)) warnings.push("It uses an IP address instead of a typical domain name.");
     if (url.hostname.split(".").length > 4) warnings.push("It has an unusually long subdomain structure.");
-
     result.textContent = warnings.length
       ? "Warning signs:\n• " + warnings.join("\n• ") +
         "\n\nThis is a basic check, not a security verdict."
       : "No obvious warning signs were detected by these basic checks. This does not guarantee the site is safe.";
   });
-
   // QUIZ QUESTIONS
   const questions = [
     {
@@ -791,68 +846,55 @@
       explanation: "HTTPS encrypts the connection; it does not guarantee honest content."
     }
   ];
-
-  let questionIndex = 0;
-  let quizScore = 0;
-  let answered = false;
-  let quizComplete = false;
-  let quizSaving = false;
-
   function renderQuestion() {
     answered = false;
     quizComplete = false;
-
     const question = questions[questionIndex];
-
-    document.getElementById("quizProgress").textContent =
+    $("quizProgress").textContent =
       "Question " + (questionIndex + 1) + " of " + questions.length;
-    document.getElementById("quizQuestion").textContent = question.q;
-    document.getElementById("quizResult").textContent = "";
-
-    const nextButton = document.getElementById("nextQuestionButton");
+    $("quizQuestion").textContent = question.q;
+    $("quizResult").textContent = "";
+    const nextButton = $("nextQuestionButton");
     nextButton.hidden = true;
     nextButton.textContent = "Next Question";
     nextButton.disabled = false;
-
-    const options = document.getElementById("quizOptions");
+    const options = $("quizOptions");
     options.replaceChildren();
-
     question.options.forEach((option, index) => {
       const button = document.createElement("button");
       button.className = "option";
       button.textContent = option;
-
       button.addEventListener("click", () => {
         if (answered || quizComplete) return;
-
         answered = true;
         const correct = index === question.answer;
         if (correct) quizScore++;
-
-        document.getElementById("quizResult").textContent =
+        $("quizResult").textContent =
           (correct ? "Correct! " : "Not quite. ") + question.explanation;
-
         options.querySelectorAll("button").forEach(item => {
           item.disabled = true;
         });
-
         nextButton.hidden = false;
         nextButton.textContent =
           questionIndex === questions.length - 1
             ? "Show Final Score"
             : "Next Question";
       });
-
       options.appendChild(button);
     });
   }
-
   // SAVE QUIZ RESULT
   async function saveQuizResult() {
     if (!client || !currentUser) {
       return { error: new Error("Please sign in before saving your result.") };
     }
-
+    if (
+      !Number.isInteger(quizScore) ||
+      quizScore < 0 ||
+      quizScore > questions.length
+    ) {
+      return { error: new Error("Invalid quiz score.") };
+    }
     return await client
       .from("quiz_results")
       .insert({
@@ -861,127 +903,289 @@
         total_questions: questions.length
       });
   }
-
-  // ADMIN LOAD QUIZ RESULTS
-  async function loadQuizResults() {
-    const body = document.getElementById("quizResultsBody");
+  // SAFE TABLE HELPERS
+  function showTableMessage(bodyId, colspan, message) {
+    const body = $(bodyId);
     body.replaceChildren();
-
-    if (!currentUser || !currentUserIsAdmin) {
+    const row = document.createElement("tr");
+    const cell = document.createElement("td");
+    cell.colSpan = colspan;
+    cell.textContent = message;
+    row.appendChild(cell);
+    body.appendChild(row);
+  }
+  function appendCell(row, value) {
+    const cell = document.createElement("td");
+    cell.textContent = value == null ? "—" : String(value);
+    row.appendChild(cell);
+  }
+  // ADMIN ANALYTICS
+  async function loadAdminAnalytics() {
+    if (!currentUserIsAdmin || !currentUser) {
       adminMessage.textContent = "Admin access required.";
       return;
     }
-
-    adminMessage.textContent = "Loading quiz results...";
-
-    const { data, error } = await client
-      .from("quiz_results")
-      .select("user_id, score, total_questions, completed_at")
-      .order("completed_at", { ascending: false })
-      .limit(100);
-
+    adminMessage.textContent = "Loading analytics...";
+    const { data, error } = await client.rpc("cybershield_admin_analytics");
     if (error) {
-      console.error("Quiz results load failed:", error.message);
+      console.error("Analytics load failed:", error.message);
       adminMessage.textContent =
-        "Could not load results. Check the quiz_results SELECT policy.";
+        "Analytics could not be loaded. Verify that the admin analytics SQL function exists and grants access only to admins.";
       return;
     }
-
-    if (!data || data.length === 0) {
+    const row = normalizeRows(data)[0] || {};
+    $("totalUsers").textContent =
+      firstDefined(row, ["total_users", "users_count", "user_count"], "—");
+    $("totalQuizzes").textContent =
+      firstDefined(row, ["total_quizzes", "quiz_count", "total_attempts"], "—");
+    const avg = firstDefined(
+      row,
+      ["average_score_percent", "avg_score_percent", "average_score"],
+      null
+    );
+    $("averageScore").textContent =
+      avg === null ? "—" : Number(avg).toFixed(1) + "%";
+    $("activeUsers").textContent =
+      firstDefined(
+        row,
+        ["active_users_last_7_days", "active_users", "weekly_active_users"],
+        "—"
+      );
+  }
+  // ADMIN REPORTS
+  async function loadQuizResults() {
+    const body = $("quizResultsBody");
+    body.replaceChildren();
+    if (!currentUser || !currentUserIsAdmin) {
+      adminMessage.textContent = "Admin access required.";
+      showTableMessage("quizResultsBody", 3, "Admin access required.");
+      return;
+    }
+    adminMessage.textContent = "Loading quiz results...";
+    // Use the SECURITY DEFINER RPC function. Do not depend on a browser-side
+    // SELECT policy that exposes every user's quiz results.
+    const { data, error } = await client.rpc("cybershield_admin_quiz_reports");
+    if (error) {
+      console.error("Quiz reports load failed:", error.message);
+      adminMessage.textContent =
+        "Could not load reports. Verify the admin reports function and its EXECUTE permissions.";
+      showTableMessage("quizResultsBody", 3, "Could not load results.");
+      return;
+    }
+    const rows = normalizeRows(data)
+      .sort((a, b) =>
+        new Date(b.completed_at || 0) - new Date(a.completed_at || 0)
+      )
+      .slice(0, 100);
+    if (!rows.length) {
       adminMessage.textContent = "No quiz results have been saved yet.";
-      const row = document.createElement("tr");
-      const cell = document.createElement("td");
-      cell.colSpan = 3;
-      cell.textContent = "No results yet.";
-      row.appendChild(cell);
-      body.appendChild(row);
+      showTableMessage("quizResultsBody", 3, "No results yet.");
       return;
     }
-
-    adminMessage.textContent = "Showing the latest " + data.length + " results.";
-
-    data.forEach(item => {
+    adminMessage.textContent = "Showing the latest " + rows.length + " results.";
+    rows.forEach(item => {
       const row = document.createElement("tr");
-
-      const date = document.createElement("td");
-      date.textContent = item.completed_at
-        ? new Date(item.completed_at).toLocaleString()
-        : "Unknown";
-
-      const user = document.createElement("td");
-      user.textContent = item.user_id || "Unknown";
-
-      const score = document.createElement("td");
-      score.textContent = item.score + " / " + item.total_questions;
-
-      row.append(date, user, score);
+      appendCell(row, formatDate(item.completed_at));
+      appendCell(row, item.user_id || "Unknown");
+      appendCell(row, (item.score ?? "—") + " / " + (item.total_questions ?? "—"));
       body.appendChild(row);
     });
   }
-
-  document.getElementById("refreshResultsButton")
-    .addEventListener("click", loadQuizResults);
-
-  // ADMIN BUTTONS
-  document.getElementById("openAdmin").addEventListener("click", async () => {
-    if (!currentUserIsAdmin) {
+  async function loadAdminDashboard() {
+    if (!currentUserIsAdmin || !currentUser) {
       adminMessage.textContent = "Admin access required.";
       return;
     }
-
-    document.getElementById("toolMenu").style.display = "none";
+    adminMessage.textContent = "Refreshing dashboard...";
+    await Promise.allSettled([
+      loadAdminAnalytics(),
+      loadQuizResults()
+    ]);
+    if (currentUserIsAdmin) {
+      adminMessage.textContent += " Refresh complete.";
+    }
+  }
+  // USER HISTORY — RLS SHOULD LIMIT THIS QUERY TO THE SIGNED-IN USER
+  async function loadMyProgress() {
+    const body = $("myHistoryBody");
+    if (!currentUser) {
+      showTableMessage("myHistoryBody", 3, "Please sign in to view your history.");
+      return;
+    }
+    setMessage("progressMessage", "Loading your quiz history...");
+    const { data, error } = await client
+      .from("quiz_results")
+      .select("score, total_questions, completed_at")
+      .eq("user_id", currentUser.id)
+      .order("completed_at", { ascending: false })
+      .limit(50);
+    if (error) {
+      console.error("User history load failed:", error.message);
+      setMessage(
+        "progressMessage",
+        "Could not load your history. Check that the quiz_results SELECT policy allows users to read their own rows.",
+        "error"
+      );
+      showTableMessage("myHistoryBody", 3, "History could not be loaded.");
+      return;
+    }
+    const rows = data || [];
+    $("myQuizCount").textContent = String(rows.length);
+    let totalPercent = 0;
+    let validCount = 0;
+    rows.forEach(item => {
+      const score = Number(item.score);
+      const total = Number(item.total_questions);
+      if (
+        Number.isFinite(score) &&
+        Number.isFinite(total) &&
+        total > 0
+      ) {
+        totalPercent += (score / total) * 100;
+        validCount++;
+      }
+    });
+    $("myAverageScore").textContent =
+      validCount ? (totalPercent / validCount).toFixed(1) + "%" : "—";
+    body.replaceChildren();
+    if (!rows.length) {
+      showTableMessage("myHistoryBody", 3, "You have no saved quiz attempts yet.");
+      setMessage("progressMessage", "Complete a quiz to start tracking your progress.");
+      return;
+    }
+    rows.forEach(item => {
+      const row = document.createElement("tr");
+      const score = Number(item.score);
+      const total = Number(item.total_questions);
+      const percentage =
+        Number.isFinite(score) && Number.isFinite(total) && total > 0
+          ? ((score / total) * 100).toFixed(1) + "%"
+          : "—";
+      appendCell(row, formatDate(item.completed_at));
+      appendCell(row, (item.score ?? "—") + " / " + (item.total_questions ?? "—"));
+      appendCell(row, percentage);
+      body.appendChild(row);
+    });
+    setMessage("progressMessage", "Your history is up to date.", "success");
+  }
+  // LEADERBOARD
+  async function loadLeaderboard() {
+    const body = $("leaderboardBody");
+    body.replaceChildren();
+    if (!currentUser) {
+      showTableMessage("leaderboardBody", 5, "Please sign in to view the leaderboard.");
+      return;
+    }
+    setMessage("leaderboardMessage", "Loading leaderboard...");
+    const { data, error } = await client.rpc("cybershield_leaderboard");
+    if (error) {
+      console.error("Leaderboard load failed:", error.message);
+      setMessage(
+        "leaderboardMessage",
+        "Leaderboard could not be loaded. Verify that the leaderboard SQL function exists and is executable by authenticated users.",
+        "error"
+      );
+      showTableMessage("leaderboardBody", 5, "Leaderboard unavailable.");
+      return;
+    }
+    const rows = normalizeRows(data);
+    if (!rows.length) {
+      showTableMessage("leaderboardBody", 5, "No quiz results are available yet.");
+      setMessage("leaderboardMessage", "Complete a quiz to appear on the leaderboard.");
+      return;
+    }
+    rows.sort((a, b) => {
+      const aBest = Number(firstDefined(a, ["best_score_percent", "best_percent"], 0));
+      const bBest = Number(firstDefined(b, ["best_score_percent", "best_percent"], 0));
+      const aAverage = Number(firstDefined(a, ["average_score_percent", "avg_score_percent"], 0));
+      const bAverage = Number(firstDefined(b, ["average_score_percent", "avg_score_percent"], 0));
+      return bBest - aBest || bAverage - aAverage;
+    });
+    rows.slice(0, 50).forEach((item, index) => {
+      const row = document.createElement("tr");
+      const player = firstDefined(
+        item,
+        ["player_label", "player", "display_name", "pseudonym"],
+        "Player " + (index + 1)
+      );
+      const quizzes = firstDefined(
+        item,
+        ["quizzes_taken", "quiz_count", "total_quizzes"],
+        "—"
+      );
+      const best = firstDefined(
+        item,
+        ["best_score_percent", "best_percent"],
+        null
+      );
+      const average = firstDefined(
+        item,
+        ["average_score_percent", "avg_score_percent", "average_percent"],
+        null
+      );
+      appendCell(row, index + 1);
+      appendCell(row, player);
+      appendCell(row, quizzes);
+      appendCell(row, best === null ? "—" : Number(best).toFixed(1) + "%");
+      appendCell(row, average === null ? "—" : Number(average).toFixed(1) + "%");
+      body.appendChild(row);
+    });
+    setMessage("leaderboardMessage", "Leaderboard updated.", "success");
+  }
+  // ADMIN BUTTONS
+  $("openAdmin").addEventListener("click", async () => {
+    if (!currentUserIsAdmin || !currentUser) {
+      adminMessage.textContent = "Admin access required.";
+      return;
+    }
+    $("toolMenu").style.display = "none";
+    $("progressPanel").style.display = "none";
+    $("leaderboardPanel").style.display = "none";
     document.querySelectorAll(".tool").forEach(tool => {
       tool.style.display = "none";
     });
-
     adminDashboard.style.display = "block";
-    await loadQuizResults();
+    await loadAdminDashboard();
   });
-
-  document.getElementById("closeAdmin").addEventListener("click", backToMenu);
-
+  $("refreshAdminButton").addEventListener("click", loadAdminDashboard);
+  $("closeAdmin").addEventListener("click", () => {
+    adminDashboard.style.display = "none";
+    $("progressPanel").style.display = "block";
+    $("leaderboardPanel").style.display = "block";
+    backToMenu();
+  });
+  $("refreshProgressButton").addEventListener("click", loadMyProgress);
+  $("refreshLeaderboardButton").addEventListener("click", loadLeaderboard);
   // NEXT QUESTION AND FINAL SCORE
-  document.getElementById("nextQuestionButton")
-    .addEventListener("click", async () => {
-      if (quizComplete) {
-        questionIndex = 0;
-        quizScore = 0;
-        answered = false;
-        quizComplete = false;
-        quizSaving = false;
-        renderQuestion();
-        return;
-      }
-
-      if (!answered || quizSaving) return;
-
-      if (questionIndex < questions.length - 1) {
-        questionIndex++;
-        renderQuestion();
-        return;
-      }
-
-      quizComplete = true;
-      quizSaving = true;
-
-      document.getElementById("quizProgress").textContent = "Quiz complete";
-      document.getElementById("quizQuestion").textContent =
-        "Your score: " + quizScore + " / " + questions.length;
-      document.getElementById("quizOptions").replaceChildren();
-
-      const resultMessage = document.getElementById("quizResult");
-      const nextButton = document.getElementById("nextQuestionButton");
-
-      nextButton.textContent = "Saving result...";
-      nextButton.disabled = true;
-      resultMessage.textContent = "Saving your result to Supabase...";
-
-      const { error } = await saveQuizResult();
-
+  $("nextQuestionButton").addEventListener("click", async () => {
+    if (quizComplete) {
+      questionIndex = 0;
+      quizScore = 0;
+      answered = false;
+      quizComplete = false;
       quizSaving = false;
-      nextButton.disabled = false;
-      nextButton.textContent = "Try Again";
-
+      renderQuestion();
+      return;
+    }
+    if (!answered || quizSaving) return;
+    if (questionIndex < questions.length - 1) {
+      questionIndex++;
+      renderQuestion();
+      return;
+    }
+    quizComplete = true;
+    quizSaving = true;
+    $("quizProgress").textContent = "Quiz complete";
+    $("quizQuestion").textContent =
+      "Your score: " + quizScore + " / " + questions.length;
+    $("quizOptions").replaceChildren();
+    const resultMessage = $("quizResult");
+    const nextButton = $("nextQuestionButton");
+    nextButton.textContent = "Saving result...";
+    nextButton.disabled = true;
+    resultMessage.textContent = "Saving your result to Supabase...";
+    try {
+      const { error } = await saveQuizResult();
       if (error) {
         console.error("Quiz result save failed:", error.message);
         resultMessage.textContent =
@@ -991,35 +1195,35 @@
         resultMessage.textContent =
           "Score: " + quizScore + " / " + questions.length +
           ". Your result has been saved.";
+        // Update progress and leaderboard after a successful save.
+        await Promise.allSettled([
+          loadMyProgress(),
+          loadLeaderboard()
+        ]);
       }
-    });
-
+    } catch (error) {
+      console.error("Quiz result save failed:", error);
+      resultMessage.textContent =
+        "Score: " + quizScore + " / " + questions.length +
+        ". A network error prevented saving.";
+    } finally {
+      quizSaving = false;
+      nextButton.disabled = false;
+      nextButton.textContent = "Try Again";
+    }
+  });
   // STARTUP
   renderQuestion();
-
-  // Initialize Turnstile after the API becomes available.
-  function waitForTurnstile(attempts = 0) {
-    if (window.turnstile) {
-      initializeTurnstile();
-    } else if (attempts < 30) {
-      setTimeout(() => waitForTurnstile(attempts + 1), 300);
-    }
-  }
-
   waitForTurnstile();
-
-  // RESTORE EXISTING SESSION
-  client.auth.getSession().then(({ data, error }) => {
+  client.auth.getSession().then(async ({ data, error }) => {
     if (error) {
       console.error("Session restore failed:", error.message);
       return;
     }
-
     if (data.session?.user) {
-      showDashboard(data.session.user);
+      await showDashboard(data.session.user);
     }
   });
-
 })();
 </script>
 </body>
